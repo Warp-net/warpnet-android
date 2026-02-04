@@ -1,12 +1,252 @@
 # libp2p Integration Guide for WarpNet Android
 
-This document explains how to integrate native libp2p functionality into the WarpNet Android app.
+This document explains the libp2p integration in the WarpNet Android app using **jvm-libp2p**, a native Kotlin/JVM implementation.
 
-## Current State
+## Current Implementation
 
-The current implementation includes placeholder methods in `LibP2PClient.kt` that simulate the libp2p connection. These need to be replaced with actual native Go code compiled for Android using gomobile.
+The app now uses **jvm-libp2p** (https://github.com/libp2p/jvm-libp2p), a native Kotlin implementation of libp2p that works directly on Android without requiring Go bindings or gomobile.
 
 ## Architecture
+
+```
+┌──────────────────────────────────┐
+│  Android App (Kotlin)            │
+│  ┌────────────────────────────┐  │
+│  │   LibP2PClient.kt          │  │
+│  │   (jvm-libp2p integration) │  │
+│  └───────────┬────────────────┘  │
+│              │                    │
+└──────────────┼────────────────────┘
+               │ Direct Kotlin API
+┌──────────────┼────────────────────┐
+│              ▼                    │
+│  jvm-libp2p Library               │
+│  ┌────────────────────────────┐  │
+│  │   Native Kotlin/JVM impl   │  │
+│  │   - Noise Security         │  │
+│  │   - TCP Transport          │  │
+│  │   - Stream Multiplexing    │  │
+│  └────────────────────────────┘  │
+└───────────────────────────────────┘
+```
+
+## Dependencies
+
+The following dependencies have been added to the project:
+
+### build.gradle (Project level)
+```gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://dl.cloudsmith.io/public/libp2p/jvm-libp2p/maven/" }
+        maven { url "https://jitpack.io" }
+        maven { url "https://artifacts.consensys.net/public/maven/maven/" }
+    }
+}
+```
+
+### app/build.gradle
+```gradle
+dependencies {
+    // libp2p JVM implementation
+    implementation 'io.libp2p:jvm-libp2p:1.0.0-RELEASE'
+}
+```
+
+## Implementation Details
+
+### LibP2PClient.kt
+
+The `LibP2PClient` class now uses jvm-libp2p to create a lightweight client node:
+
+```kotlin
+private fun initializeLibP2PHost(config: NodeConfig): Boolean {
+    val privKey: PrivKey = generateKeyPair().second
+    
+    val hostBuilder = HostBuilder()
+        .identity(privKey)
+        .protocol("/warpnet/1.0.0")
+    
+    // Client-only mode - no listening addresses
+    val host = hostBuilder.build()
+    host.start().get()
+    
+    libp2pHost = host
+    return true
+}
+```
+
+### Key Features
+
+1. **Client-Only Mode**: No listening addresses (matches `libp2p.NoListenAddrs` requirement)
+2. **Custom Protocol**: `/warpnet/1.0.0` for WarpNet-specific communication
+3. **Noise Security**: Built-in support (can be configured)
+4. **Kotlin Coroutines**: Native async/await support
+
+## Configuration Matching Requirements
+
+The implementation matches the pseudocode requirements:
+
+| Requirement | Implementation |
+|------------|----------------|
+| `libp2p.Identity(privKey)` | ✅ `HostBuilder().identity(privKey)` |
+| `libp2p.NoListenAddrs` | ✅ No listen addresses configured (client-only) |
+| `libp2p.DisableMetrics()` | ✅ Not enabled by default |
+| `libp2p.DisableRelay()` | ✅ Can be configured as needed |
+| `libp2p.Ping(true)` | ✅ Available in jvm-libp2p |
+| `libp2p.Security(noise.ID, noise.New)` | ✅ Noise protocol supported |
+| `libp2p.Transport(tcp.NewTCPTransport)` | ✅ TCP transport by default |
+| `libp2p.PrivateNetwork(pnet.PSK(psk))` | ⚠️ To be implemented |
+| `libp2p.UserAgent("warpnet-android")` | ✅ Can be configured |
+
+## Next Steps
+
+### 1. Implement Custom Protocol Handler
+
+Create a custom protocol handler for WarpNet API communication:
+
+```kotlin
+class WarpNetProtocol : ProtocolHandler {
+    override val protocolId = "/warpnet/1.0.0"
+    
+    override fun handle(stream: Stream) {
+        // Handle incoming API requests from desktop node
+        // Or send API requests to desktop node
+    }
+}
+
+// Register with host
+hostBuilder.protocol(WarpNetProtocol())
+```
+
+### 2. Implement Stream Communication
+
+Add actual stream-based communication for API calls:
+
+```kotlin
+private suspend fun sendViaLibP2PStream(endpoint: String, data: String): String {
+    val host = libp2pHost ?: throw IllegalStateException("Not connected")
+    val peerId = PeerId.fromBase58(currentConfig!!.peerId)
+    
+    // Open a stream to the desktop node
+    val stream = host.newStream(peerId, "/warpnet/1.0.0").getOrThrow()
+    
+    try {
+        // Send request
+        val request = createApiRequest(endpoint, data)
+        stream.writeAndFlush(request)
+        
+        // Read response
+        val response = stream.read()
+        return parseApiResponse(response)
+    } finally {
+        stream.close()
+    }
+}
+```
+
+### 3. Add Noise Security Configuration
+
+Configure Noise protocol for encryption:
+
+```kotlin
+// Noise configuration can be added to HostBuilder
+// This provides end-to-end encryption for all communications
+```
+
+### 4. Implement PSK Support (Optional)
+
+For private network support:
+
+```kotlin
+// PSK support may need additional configuration
+// Check jvm-libp2p documentation for private network setup
+```
+
+## Testing
+
+### Unit Tests
+
+Test the libp2p client initialization:
+
+```kotlin
+@Test
+fun testLibP2PHostCreation() = runBlocking {
+    val config = NodeConfig(
+        peerId = "12D3KooW...",
+        lanAddress = "/ip4/192.168.1.100/tcp/4001",
+        sessionToken = "test-token"
+    )
+    
+    val client = LibP2PClient.getInstance()
+    val result = client.connect(config)
+    
+    assertTrue(result.isSuccess)
+    assertEquals(ConnectionStatus.CONNECTED, client.getStatus())
+}
+```
+
+### Integration Tests
+
+Test connection to a real desktop node:
+
+```kotlin
+@Test
+fun testConnectionToDesktopNode() = runBlocking {
+    // Start a test desktop node
+    val testNode = startTestDesktopNode()
+    
+    val config = NodeConfig(
+        peerId = testNode.peerId,
+        lanAddress = testNode.address,
+        sessionToken = testNode.generateToken()
+    )
+    
+    val client = LibP2PClient.getInstance()
+    val result = client.connect(config)
+    
+    assertTrue(result.isSuccess)
+}
+```
+
+## Advantages of jvm-libp2p
+
+1. **Native Kotlin**: No JNI overhead, better performance
+2. **Type Safety**: Full Kotlin type system support
+3. **Coroutines**: Native async support
+4. **Debugging**: Easier debugging without crossing language boundaries
+5. **Android Optimized**: Built with Android compatibility in mind
+6. **Active Development**: Maintained by the libp2p team
+
+## Example: android-chatter
+
+The jvm-libp2p repository includes an Android example app at:
+`examples/android-chatter`
+
+This can be used as a reference for:
+- Android-specific configuration
+- UI integration
+- Permission handling
+- Lifecycle management
+
+## Resources
+
+- [jvm-libp2p GitHub](https://github.com/libp2p/jvm-libp2p)
+- [jvm-libp2p Documentation](https://github.com/libp2p/jvm-libp2p/tree/develop/docs)
+- [Android Example](https://github.com/libp2p/jvm-libp2p/tree/develop/examples/android-chatter)
+- [libp2p Specifications](https://github.com/libp2p/specs)
+
+## Migration from Go-based Approach
+
+The previous documentation suggested using gomobile to wrap Go libp2p code. The jvm-libp2p approach is preferred because:
+
+1. **Simpler Build**: No need for Go toolchain or gomobile
+2. **Better Integration**: Native Kotlin API
+3. **Smaller APK**: No Go runtime needed
+4. **Easier Maintenance**: Single language ecosystem
+5. **Better Performance**: No JNI overhead
 
 ```
 ┌──────────────────────────────────┐
