@@ -85,3 +85,8 @@ lint/tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Test files and artifacts
+test-qr-code.png
+test-config.json
+*.test.json
