@@ -23,7 +23,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
                 addProperty("limit", limit)
             }
             
-            val result = libp2pClient.sendMessage("/warpnet.timeline/1.0.0", gson.toJson(request))
+            val result = libp2pClient.sendMessage("/private/get/timeline/0.0.0", gson.toJson(request))
             result.fold(
                 onSuccess = { response ->
                     // Parse response
@@ -49,7 +49,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
                 addProperty("content", content)
             }
             
-            val result = libp2pClient.sendMessage("/warpnet.timeline/1.0.0", gson.toJson(request))
+            val result = libp2pClient.sendMessage("/private/post/tweet/0.0.0", gson.toJson(request))
             result.fold(
                 onSuccess = { Result.success(true) },
                 onFailure = { e -> Result.failure(e) }
@@ -65,7 +65,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
      */
     suspend fun getNotifications(): Result<List<Notification>> = withContext(Dispatchers.IO) {
         try {
-            val result = libp2pClient.sendMessage("/warpnet.notifications/1.0.0", "{}")
+            val result = libp2pClient.sendMessage("/private/get/notifications/0.0.0", "{}")
             result.fold(
                 onSuccess = { response ->
                     val notifications = parseNotificationsResponse(response)
@@ -84,7 +84,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
      */
     suspend fun getMessages(): Result<List<Message>> = withContext(Dispatchers.IO) {
         try {
-            val result = libp2pClient.sendMessage("/warpnet.messages/1.0.0", "{}")
+            val result = libp2pClient.sendMessage("/private/get/messages/0.0.0", "{}")
             result.fold(
                 onSuccess = { response ->
                     val messages = parseMessagesResponse(response)
@@ -101,15 +101,16 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
     private fun parseFeedResponse(json: String): List<FeedItem> {
         return try {
             val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
-            val items = jsonObject.getAsJsonArray("items") ?: return emptyList()
+            // WarpNet returns an array of tweets in the "Tweets" field
+            val items = jsonObject.getAsJsonArray("Tweets") ?: return emptyList()
             
             items.map { element ->
                 val item = element.asJsonObject
                 FeedItem(
-                    id = item.get("id")?.asString ?: "",
-                    author = item.get("author")?.asString ?: "",
-                    content = item.get("content")?.asString ?: "",
-                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                    id = item.get("Id")?.asString ?: "",
+                    author = item.get("Author")?.asString ?: "",
+                    content = item.get("Content")?.asString ?: "",
+                    timestamp = item.get("Timestamp")?.asLong ?: 0L
                 )
             }
         } catch (e: Exception) {
@@ -121,15 +122,16 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
     private fun parseNotificationsResponse(json: String): List<Notification> {
         return try {
             val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
-            val items = jsonObject.getAsJsonArray("notifications") ?: return emptyList()
+            // WarpNet returns an array of notifications in the "Notifications" field
+            val items = jsonObject.getAsJsonArray("Notifications") ?: return emptyList()
             
             items.map { element ->
                 val item = element.asJsonObject
                 Notification(
-                    id = item.get("id")?.asString ?: "",
-                    type = item.get("type")?.asString ?: "",
-                    content = item.get("content")?.asString ?: "",
-                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                    id = item.get("Id")?.asString ?: "",
+                    type = item.get("Type")?.asString ?: "",
+                    content = item.get("Content")?.asString ?: "",
+                    timestamp = item.get("Timestamp")?.asLong ?: 0L
                 )
             }
         } catch (e: Exception) {
@@ -141,15 +143,16 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
     private fun parseMessagesResponse(json: String): List<Message> {
         return try {
             val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
-            val items = jsonObject.getAsJsonArray("messages") ?: return emptyList()
+            // WarpNet returns an array of messages in the "Messages" field
+            val items = jsonObject.getAsJsonArray("Messages") ?: return emptyList()
             
             items.map { element ->
                 val item = element.asJsonObject
                 Message(
-                    id = item.get("id")?.asString ?: "",
-                    from = item.get("from")?.asString ?: "",
-                    content = item.get("content")?.asString ?: "",
-                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                    id = item.get("Id")?.asString ?: "",
+                    from = item.get("From")?.asString ?: "",
+                    content = item.get("Content")?.asString ?: "",
+                    timestamp = item.get("Timestamp")?.asLong ?: 0L
                 )
             }
         } catch (e: Exception) {

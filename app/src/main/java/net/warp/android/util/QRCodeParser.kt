@@ -15,31 +15,26 @@ object QRCodeParser {
     
     /**
      * Parse QR code data from desktop node
-     * Expected format: JSON with peerId, addresses, sessionToken, and optional PSK
+     * Expected format: JSON with peerId, sessionToken, and optional PSK
      */
     fun parse(qrContent: String): Result<QRCodeData> {
         return try {
             val json = gson.fromJson(qrContent, JsonObject::class.java)
             
-            val peerId = json.get("peerId")?.asString
+            // Parse peer ID (may be in "peerId" or "PeerId" field)
+            val peerId = json.get("peerId")?.asString ?: json.get("PeerId")?.asString
                 ?: return Result.failure(Exception("Missing peerId"))
             
-            val addressesJson = json.getAsJsonArray("addresses")
-            val addresses = mutableListOf<String>()
-            addressesJson?.forEach { addresses.add(it.asString) }
-            
-            if (addresses.isEmpty()) {
-                return Result.failure(Exception("No addresses provided"))
-            }
-            
-            val sessionToken = json.get("sessionToken")?.asString
+            // Parse session token (may be in "sessionToken" or "SessionToken" field)
+            val sessionToken = json.get("sessionToken")?.asString ?: json.get("SessionToken")?.asString
                 ?: return Result.failure(Exception("Missing sessionToken"))
             
-            val psk = json.get("psk")?.asString
+            // Parse optional PSK (may be in "psk" or "PSK" field)
+            val psk = json.get("psk")?.asString ?: json.get("PSK")?.asString
             
             val qrData = QRCodeData(
                 peerId = peerId,
-                addresses = addresses,
+                addresses = emptyList(), // Not needed with bootstrap nodes
                 sessionToken = sessionToken,
                 psk = psk
             )
