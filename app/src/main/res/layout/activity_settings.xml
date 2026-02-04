@@ -52,37 +52,16 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:hint="@string/lan_address">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_lan_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:hint="@string/remote_address">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_remote_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_use_relay"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/use_relay" />
+                    android:hint="@string/session_token">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_session_token"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_save"

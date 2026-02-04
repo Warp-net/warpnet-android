@@ -36,9 +36,7 @@ class SettingsActivity : AppCompatActivity() {
         val config = configManager.getConfig()
         if (config != null) {
             binding.editPeerId.setText(config.peerId)
-            binding.editLanAddress.setText(config.lanAddress ?: "")
-            binding.editRemoteAddress.setText(config.remoteAddress ?: "")
-            binding.switchUseRelay.isChecked = config.useRelay
+            binding.editSessionToken.setText(config.sessionToken)
         }
     }
     
@@ -58,18 +56,21 @@ class SettingsActivity : AppCompatActivity() {
     
     private fun saveConfiguration() {
         val peerId = binding.editPeerId.text.toString().trim()
+        val sessionToken = binding.editSessionToken.text.toString().trim()
         
         if (peerId.isEmpty()) {
             Toast.makeText(this, "Peer ID is required", Toast.LENGTH_SHORT).show()
             return
         }
         
+        if (sessionToken.isEmpty()) {
+            Toast.makeText(this, "Session Token is required", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
         val config = NodeConfig(
             peerId = peerId,
-            lanAddress = binding.editLanAddress.text.toString().trim().takeIf { it.isNotEmpty() },
-            remoteAddress = binding.editRemoteAddress.text.toString().trim().takeIf { it.isNotEmpty() },
-            sessionToken = "manual-" + System.currentTimeMillis(), // Placeholder
-            useRelay = binding.switchUseRelay.isChecked
+            sessionToken = sessionToken
         )
         
         configManager.saveConfig(config)
@@ -84,9 +85,7 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton("Clear") { _, _ ->
                 configManager.clearConfig()
                 binding.editPeerId.text?.clear()
-                binding.editLanAddress.text?.clear()
-                binding.editRemoteAddress.text?.clear()
-                binding.switchUseRelay.isChecked = false
+                binding.editSessionToken.text?.clear()
                 Toast.makeText(this, "Settings cleared", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)

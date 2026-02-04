@@ -119,14 +119,14 @@ class QRScanActivity : AppCompatActivity() {
             result.fold(
                 onSuccess = { qrData ->
                     // Convert QR data to NodeConfig
+                    // QR code fields from desktop backend should include:
+                    // - peerId: libp2p peer ID
+                    // - sessionToken: authentication token
+                    // - psk: optional pre-shared key for private network
                     val config = NodeConfig(
                         peerId = qrData.peerId,
-                        lanAddress = qrData.addresses.firstOrNull(),
-                        remoteAddress = qrData.addresses.getOrNull(1),
-                        relayAddress = qrData.addresses.getOrNull(2),
                         sessionToken = qrData.sessionToken,
-                        psk = QRCodeParser.decodePSK(qrData.psk),
-                        useRelay = false
+                        psk = QRCodeParser.decodePSK(qrData.psk)
                     )
                     
                     // Save configuration

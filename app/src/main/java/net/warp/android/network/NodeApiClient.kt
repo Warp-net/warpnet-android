@@ -17,13 +17,13 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
     /**
      * Get feed from desktop node
      */
-    suspend fun getFeed(limit: Int = 50): Result<List<FeedItem>> = withContext(Dispatchers.IO) {
+    suspend fun getFeed(limit: Int = 20): Result<List<FeedItem>> = withContext(Dispatchers.IO) {
         try {
             val request = JsonObject().apply {
                 addProperty("limit", limit)
             }
             
-            val result = libp2pClient.sendMessage("/api/feed", gson.toJson(request))
+            val result = libp2pClient.sendMessage("/warpnet.timeline/1.0.0", gson.toJson(request))
             result.fold(
                 onSuccess = { response ->
                     // Parse response
@@ -49,7 +49,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
                 addProperty("content", content)
             }
             
-            val result = libp2pClient.sendMessage("/api/post", gson.toJson(request))
+            val result = libp2pClient.sendMessage("/warpnet.timeline/1.0.0", gson.toJson(request))
             result.fold(
                 onSuccess = { Result.success(true) },
                 onFailure = { e -> Result.failure(e) }
@@ -65,7 +65,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
      */
     suspend fun getNotifications(): Result<List<Notification>> = withContext(Dispatchers.IO) {
         try {
-            val result = libp2pClient.sendMessage("/api/notifications", "{}")
+            val result = libp2pClient.sendMessage("/warpnet.notifications/1.0.0", "{}")
             result.fold(
                 onSuccess = { response ->
                     val notifications = parseNotificationsResponse(response)
@@ -84,7 +84,7 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
      */
     suspend fun getMessages(): Result<List<Message>> = withContext(Dispatchers.IO) {
         try {
-            val result = libp2pClient.sendMessage("/api/messages", "{}")
+            val result = libp2pClient.sendMessage("/warpnet.messages/1.0.0", "{}")
             result.fold(
                 onSuccess = { response ->
                     val messages = parseMessagesResponse(response)
@@ -99,19 +99,63 @@ class NodeApiClient(private val libp2pClient: LibP2PClient) {
     }
     
     private fun parseFeedResponse(json: String): List<FeedItem> {
-        // Placeholder parsing
-        // In real implementation, parse actual response from desktop node
-        return emptyList()
+        return try {
+            val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
+            val items = jsonObject.getAsJsonArray("items") ?: return emptyList()
+            
+            items.map { element ->
+                val item = element.asJsonObject
+                FeedItem(
+                    id = item.get("id")?.asString ?: "",
+                    author = item.get("author")?.asString ?: "",
+                    content = item.get("content")?.asString ?: "",
+                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing feed response", e)
+            emptyList()
+        }
     }
     
     private fun parseNotificationsResponse(json: String): List<Notification> {
-        // Placeholder parsing
-        return emptyList()
+        return try {
+            val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
+            val items = jsonObject.getAsJsonArray("notifications") ?: return emptyList()
+            
+            items.map { element ->
+                val item = element.asJsonObject
+                Notification(
+                    id = item.get("id")?.asString ?: "",
+                    type = item.get("type")?.asString ?: "",
+                    content = item.get("content")?.asString ?: "",
+                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing notifications response", e)
+            emptyList()
+        }
     }
     
     private fun parseMessagesResponse(json: String): List<Message> {
-        // Placeholder parsing
-        return emptyList()
+        return try {
+            val jsonObject = gson.fromJson(json, com.google.gson.JsonObject::class.java)
+            val items = jsonObject.getAsJsonArray("messages") ?: return emptyList()
+            
+            items.map { element ->
+                val item = element.asJsonObject
+                Message(
+                    id = item.get("id")?.asString ?: "",
+                    from = item.get("from")?.asString ?: "",
+                    content = item.get("content")?.asString ?: "",
+                    timestamp = item.get("timestamp")?.asLong ?: 0L
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing messages response", e)
+            emptyList()
+        }
     }
     
     data class FeedItem(
