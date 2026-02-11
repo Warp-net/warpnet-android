@@ -1,179 +1,200 @@
 # libp2p Integration Guide for WarpNet Android
 
-This document explains the libp2p integration in the WarpNet Android app using **jvm-libp2p**, a native Kotlin/JVM implementation.
+This document explains the libp2p integration in the WarpNet Android app using **native Go libp2p** compiled to a native library via **gomobile**.
 
-## Current Implementation
+## Architecture Overview
 
-The app now uses **jvm-libp2p** (https://github.com/libp2p/jvm-libp2p), a native Kotlin implementation of libp2p that works directly on Android without requiring Go bindings or gomobile.
+The WarpNet Android app uses a native Go implementation of libp2p, compiled to a native Android library (.aar) using gomobile. This provides:
 
-## Architecture
+- Full Go libp2p compatibility
+- Noise protocol encryption
+- PSK support for private networks
+- Thin client architecture (no listening, client-only mode)
+- Direct integration with WarpNet desktop node code
 
 ```
 ┌──────────────────────────────────┐
 │  Android App (Kotlin)            │
 │  ┌────────────────────────────┐  │
 │  │   LibP2PClient.kt          │  │
-│  │   (jvm-libp2p integration) │  │
+│  │   (JNI wrapper)            │  │
 │  └───────────┬────────────────┘  │
 │              │                    │
 └──────────────┼────────────────────┘
-               │ Direct Kotlin API
+               │ JNI / gomobile
 ┌──────────────┼────────────────────┐
 │              ▼                    │
-│  jvm-libp2p Library               │
+│  Native Library (warpnet.aar)     │
 │  ┌────────────────────────────┐  │
-│  │   Native Kotlin/JVM impl   │  │
+│  │   Go libp2p Implementation │  │
 │  │   - Noise Security         │  │
 │  │   - TCP Transport          │  │
-│  │   - Stream Multiplexing    │  │
+│  │   - PSK Support            │  │
+│  │   - Client-only mode       │  │
 │  └────────────────────────────┘  │
 └───────────────────────────────────┘
 ```
 
 ## Dependencies
 
-The following dependencies have been added to the project:
+### Build-time Dependencies
 
-### build.gradle (Project level)
-```gradle
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://dl.cloudsmith.io/public/libp2p/jvm-libp2p/maven/" }
-        maven { url "https://jitpack.io" }
-        maven { url "https://artifacts.consensys.net/public/maven/maven/" }
-    }
-}
+1. **Go 1.21+**: For building the native library
+2. **gomobile**: For compiling Go to Android native library
+3. **Android SDK & NDK**: For Android build support
+
+### Installation
+
+```bash
+# Install Go (if not already installed)
+# Visit https://golang.org/dl/
+
+# Install gomobile
+go install golang.org/x/mobile/cmd/gomobile@latest
+
+# Initialize gomobile
+gomobile init
 ```
 
-### app/build.gradle
-```gradle
-dependencies {
-    // libp2p JVM implementation
-    implementation 'io.libp2p:jvm-libp2p:1.0.0-RELEASE'
-}
+### Go Module Dependencies
+
+The native Go module (`native/warpnet-client`) uses:
+
+```go
+require (
+    github.com/libp2p/go-libp2p v0.35.0
+    github.com/libp2p/go-libp2p-pnet v0.2.0
+    github.com/multiformats/go-multiaddr v0.12.4
+)
 ```
+
+These are automatically downloaded when building.
 
 ## Implementation Details
 
-### LibP2PClient.kt
+### Native Go Client (`native/warpnet-client/client.go`)
 
-The `LibP2PClient` class now uses jvm-libp2p to create a lightweight client node:
+The core libp2p client is implemented in Go with the following features:
 
-```kotlin
-private fun initializeLibP2PHost(config: NodeConfig): Boolean {
-    val privKey: PrivKey = generateKeyPair().second
-    
-    val hostBuilder = HostBuilder()
-        .identity(privKey)
-        .protocol("/warpnet/1.0.0")
-    
-    // Client-only mode - no listening addresses
-    val host = hostBuilder.build()
-    host.start().get()
-    
-    libp2pHost = host
-    return true
+```go
+// Thin client configuration matching requirements
+opts := []libp2p.Option{
+    libp2p.Identity(privKey),              // Client identity
+    libp2p.NoListenAddrs,                  // Client-only mode - no listening
+    libp2p.DisableMetrics(),               // Lightweight
+    libp2p.DisableRelay(),                 // No relay listening
+    libp2p.Ping(true),                     // Enable ping
+    libp2p.Security(noise.ID, noise.New),  // Noise protocol encryption
+    libp2p.Transport(tcp.NewTCPTransport), // TCP transport
+    libp2p.UserAgent("warpnet-android/1.0"), // Custom user agent
+    libp2p.DisableIdentifyAddressDiscovery(), // Disable discovery
+}
+
+// Add PSK if provided for private network
+if psk != nil && len(psk) == 32 {
+    opts = append(opts, libp2p.PrivateNetwork(pnet.NewProtector(psk)))
 }
 ```
 
-### Key Features
+### Gomobile Wrapper (`native/warpnet-client/mobile.go`)
 
-1. **Client-Only Mode**: No listening addresses (matches `libp2p.NoListenAddrs` requirement)
-2. **Custom Protocol**: `/warpnet/1.0.0` for WarpNet-specific communication
-3. **Noise Security**: Built-in support (can be configured)
-4. **Kotlin Coroutines**: Native async/await support
+The mobile wrapper provides JNI-compatible functions:
+
+- `Initialize(pskBase64 string) string` - Create client with optional PSK
+- `ConnectToNode(peerID, address string) string` - Connect to desktop node
+- `SendRequest(protocolID, dataJSON string) string` - Send API request
+- `GetClientPeerID() string` - Get client's peer ID
+- `CheckConnection() string` - Check connection status
+- `DisconnectFromNode() string` - Disconnect from node
+- `Shutdown() string` - Shutdown client
+
+### Kotlin JNI Bridge (`app/.../LibP2PClient.kt`)
+
+The Kotlin layer wraps the native functions:
+
+```kotlin
+// Load native library
+init {
+    System.loadLibrary("gojni")
+}
+
+// Initialize native client
+val initError = Warpnetclient.initialize(pskBase64)
+
+// Connect to desktop node
+val connectError = Warpnetclient.connectToNode(config.peerId, address)
+
+// Send API request
+val responseJSON = Warpnetclient.sendRequest(endpoint, data)
+```
 
 ## Configuration Matching Requirements
 
-The implementation matches the pseudocode requirements:
+The Go implementation fully matches the pseudocode requirements:
 
-| Requirement | Implementation |
-|------------|----------------|
-| `libp2p.Identity(privKey)` | ✅ `HostBuilder().identity(privKey)` |
-| `libp2p.NoListenAddrs` | ✅ No listen addresses configured (client-only) |
-| `libp2p.DisableMetrics()` | ✅ Not enabled by default |
-| `libp2p.DisableRelay()` | ✅ Can be configured as needed |
-| `libp2p.Ping(true)` | ✅ Available in jvm-libp2p |
-| `libp2p.Security(noise.ID, noise.New)` | ✅ Noise protocol supported |
-| `libp2p.Transport(tcp.NewTCPTransport)` | ✅ TCP transport by default |
-| `libp2p.PrivateNetwork(pnet.PSK(psk))` | ⚠️ To be implemented |
-| `libp2p.UserAgent("warpnet-android")` | ✅ Can be configured |
+| Requirement | Implementation | Status |
+|------------|----------------|--------|
+| `libp2p.Identity(privKey)` | ✅ Generated Ed25519 key | Complete |
+| `libp2p.NoListenAddrs` | ✅ Client-only mode, no listening | Complete |
+| `libp2p.DisableMetrics()` | ✅ Metrics disabled | Complete |
+| `libp2p.DisableRelay()` | ✅ Relay disabled | Complete |
+| `libp2p.Ping(true)` | ✅ Ping enabled | Complete |
+| `libp2p.Security(noise.ID, noise.New)` | ✅ Noise protocol encryption | Complete |
+| `libp2p.Transport(tcp.NewTCPTransport)` | ✅ TCP transport | Complete |
+| `libp2p.PrivateNetwork(pnet.PSK(psk))` | ✅ PSK support for private networks | Complete |
+| `libp2p.UserAgent("warpnet-android")` | ✅ Custom user agent | Complete |
+| `libp2p.DisableIdentifyAddressDiscovery()` | ✅ Discovery disabled | Complete |
 
-## Next Steps
+## Building the Native Library
 
-### 1. Implement Custom Protocol Handler
+### Step 1: Build Script
 
-Create a custom protocol handler for WarpNet API communication:
+Run the provided build script:
 
-```kotlin
-class WarpNetProtocol : ProtocolHandler {
-    override val protocolId = "/warpnet/1.0.0"
-    
-    override fun handle(stream: Stream) {
-        // Handle incoming API requests from desktop node
-        // Or send API requests to desktop node
-    }
-}
-
-// Register with host
-hostBuilder.protocol(WarpNetProtocol())
+```bash
+chmod +x scripts/build-native.sh
+./scripts/build-native.sh
 ```
 
-### 2. Implement Stream Communication
+### Step 2: Manual Build (Alternative)
 
-Add actual stream-based communication for API calls:
+```bash
+cd native/warpnet-client
 
-```kotlin
-private suspend fun sendViaLibP2PStream(endpoint: String, data: String): String {
-    val host = libp2pHost ?: throw IllegalStateException("Not connected")
-    val peerId = PeerId.fromBase58(currentConfig!!.peerId)
-    
-    // Open a stream to the desktop node
-    val stream = host.newStream(peerId, "/warpnet/1.0.0").getOrThrow()
-    
-    try {
-        // Send request
-        val request = createApiRequest(endpoint, data)
-        stream.writeAndFlush(request)
-        
-        // Read response
-        val response = stream.read()
-        return parseApiResponse(response)
-    } finally {
-        stream.close()
-    }
-}
+# Download dependencies
+go mod download
+go mod tidy
+
+# Build for Android
+gomobile bind -v -target=android -o ../../app/libs/warpnet.aar .
 ```
 
-### 3. Add Noise Security Configuration
+### Step 3: Verify Build
 
-Configure Noise protocol for encryption:
+The `warpnet.aar` file should be created in `app/libs/`:
 
-```kotlin
-// Noise configuration can be added to HostBuilder
-// This provides end-to-end encryption for all communications
-```
-
-### 4. Implement PSK Support (Optional)
-
-For private network support:
-
-```kotlin
-// PSK support may need additional configuration
-// Check jvm-libp2p documentation for private network setup
+```bash
+ls -lh app/libs/warpnet.aar
 ```
 
 ## Testing
 
-### Unit Tests
+### Go Unit Tests
 
-Test the libp2p client initialization:
+Test the native Go client:
+
+```bash
+cd native/warpnet-client
+go test -v
+```
+
+### Android Integration Tests
+
+Test the Android app with the native library:
 
 ```kotlin
 @Test
-fun testLibP2PHostCreation() = runBlocking {
+fun testNativeClientConnection() = runBlocking {
     val config = NodeConfig(
         peerId = "12D3KooW...",
         lanAddress = "/ip4/192.168.1.100/tcp/4001",
@@ -188,392 +209,120 @@ fun testLibP2PHostCreation() = runBlocking {
 }
 ```
 
-### Integration Tests
+## Advantages of Go libp2p via gomobile
 
-Test connection to a real desktop node:
-
-```kotlin
-@Test
-fun testConnectionToDesktopNode() = runBlocking {
-    // Start a test desktop node
-    val testNode = startTestDesktopNode()
-    
-    val config = NodeConfig(
-        peerId = testNode.peerId,
-        lanAddress = testNode.address,
-        sessionToken = testNode.generateToken()
-    )
-    
-    val client = LibP2PClient.getInstance()
-    val result = client.connect(config)
-    
-    assertTrue(result.isSuccess)
-}
-```
-
-## Advantages of jvm-libp2p
-
-1. **Native Kotlin**: No JNI overhead, better performance
-2. **Type Safety**: Full Kotlin type system support
-3. **Coroutines**: Native async support
-4. **Debugging**: Easier debugging without crossing language boundaries
-5. **Android Optimized**: Built with Android compatibility in mind
-6. **Active Development**: Maintained by the libp2p team
-
-## Example: android-chatter
-
-The jvm-libp2p repository includes an Android example app at:
-`examples/android-chatter`
-
-This can be used as a reference for:
-- Android-specific configuration
-- UI integration
-- Permission handling
-- Lifecycle management
+1. **Full Compatibility**: Uses official Go libp2p implementation
+2. **Feature Complete**: All libp2p features available (Noise, PSK, etc.)
+3. **Proven**: Same codebase as desktop WarpNet node
+4. **Security**: Battle-tested Go cryptography
+5. **Maintainability**: Shares code with desktop implementation
+6. **Standards Compliant**: Full libp2p spec compliance
 
 ## Resources
 
-- [jvm-libp2p GitHub](https://github.com/libp2p/jvm-libp2p)
-- [jvm-libp2p Documentation](https://github.com/libp2p/jvm-libp2p/tree/develop/docs)
-- [Android Example](https://github.com/libp2p/jvm-libp2p/tree/develop/examples/android-chatter)
+- [go-libp2p GitHub](https://github.com/libp2p/go-libp2p)
+- [gomobile Documentation](https://pkg.go.dev/golang.org/x/mobile)
 - [libp2p Specifications](https://github.com/libp2p/specs)
-
-## Migration from Go-based Approach
-
-The previous documentation suggested using gomobile to wrap Go libp2p code. The jvm-libp2p approach is preferred because:
-
-1. **Simpler Build**: No need for Go toolchain or gomobile
-2. **Better Integration**: Native Kotlin API
-3. **Smaller APK**: No Go runtime needed
-4. **Easier Maintenance**: Single language ecosystem
-5. **Better Performance**: No JNI overhead
-
-```
-┌──────────────────────────────────┐
-│  Android App (Kotlin/Java)       │
-│  ┌────────────────────────────┐  │
-│  │   LibP2PClient.kt          │  │
-│  │   (JNI/Gomobile Bridge)    │  │
-│  └───────────┬────────────────┘  │
-│              │                    │
-└──────────────┼────────────────────┘
-               │ JNI
-┌──────────────┼────────────────────┐
-│              ▼                    │
-│  Native Library (.so)             │
-│  ┌────────────────────────────┐  │
-│  │   libp2p Go Implementation │  │
-│  │   - Noise Security         │  │
-│  │   - TCP Transport          │  │
-│  │   - Private Network (PSK)  │  │
-│  └────────────────────────────┘  │
-└───────────────────────────────────┘
-```
-
-## Implementation Steps
-
-### 1. Create Go Module for libp2p
-
-Create a new Go module in `native/warpnet-client/`:
-
-```go
-package warpnetclient
-
-import (
-    "context"
-    "crypto/rand"
-    "fmt"
-    
-    "github.com/libp2p/go-libp2p"
-    "github.com/libp2p/go-libp2p/core/crypto"
-    "github.com/libp2p/go-libp2p/core/host"
-    "github.com/libp2p/go-libp2p/core/peer"
-    noise "github.com/libp2p/go-libp2p/p2p/security/noise"
-    "github.com/libp2p/go-libp2p/p2p/transport/tcp"
-    pnet "github.com/libp2p/go-libp2p-pnet"
-)
-
-type WarpNetClient struct {
-    host host.Host
-    ctx  context.Context
-}
-
-// NewClient creates a new libp2p client configured as per requirements
-func NewClient(psk []byte) (*WarpNetClient, error) {
-    ctx := context.Background()
-    
-    // Generate a new private key for this client
-    privKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, 2048, rand.Reader)
-    if err != nil {
-        return nil, err
-    }
-    
-    // Create libp2p options matching the pseudocode from the issue
-    opts := []libp2p.Option{
-        libp2p.Identity(privKey),
-        libp2p.NoListenAddrs,                          // Client-only mode
-        libp2p.DisableMetrics(),                       // Lightweight
-        libp2p.DisableRelay(),                         // No relay listening
-        libp2p.Ping(true),                             // Enable ping
-        libp2p.Security(noise.ID, noise.New),          // Noise protocol
-        libp2p.Transport(tcp.NewTCPTransport),         // TCP transport
-        libp2p.UserAgent("warpnet-android"),           // Custom user agent
-    }
-    
-    // Add PSK if provided
-    if psk != nil {
-        opts = append(opts, libp2p.PrivateNetwork(pnet.PSK(psk)))
-    }
-    
-    // Create the libp2p host
-    h, err := libp2p.New(opts...)
-    if err != nil {
-        return nil, err
-    }
-    
-    return &WarpNetClient{
-        host: h,
-        ctx:  ctx,
-    }, nil
-}
-
-// Connect establishes a connection to the desktop node
-func (c *WarpNetClient) Connect(peerID string, addr string) error {
-    // Parse peer ID
-    pid, err := peer.Decode(peerID)
-    if err != nil {
-        return fmt.Errorf("invalid peer ID: %w", err)
-    }
-    
-    // Parse multiaddr
-    maddr, err := multiaddr.NewMultiaddr(addr)
-    if err != nil {
-        return fmt.Errorf("invalid multiaddr: %w", err)
-    }
-    
-    // Add peer to peerstore
-    c.host.Peerstore().AddAddr(pid, maddr, peerstore.PermanentAddrTTL)
-    
-    // Connect to the peer
-    if err := c.host.Connect(c.ctx, peer.AddrInfo{ID: pid}); err != nil {
-        return fmt.Errorf("connection failed: %w", err)
-    }
-    
-    return nil
-}
-
-// SendMessage sends a message to the desktop node
-func (c *WarpNetClient) SendMessage(endpoint string, data []byte) ([]byte, error) {
-    // Implementation would use libp2p streams to send/receive data
-    // This is a placeholder
-    return nil, nil
-}
-
-// Close closes the libp2p host
-func (c *WarpNetClient) Close() error {
-    return c.host.Close()
-}
-```
-
-### 2. Build with Gomobile
-
-Install gomobile:
-```bash
-go install golang.org/x/mobile/cmd/gomobile@latest
-gomobile init
-```
-
-Build the native library for Android:
-```bash
-cd native/warpnet-client
-gomobile bind -target=android -o ../../app/libs/warpnet.aar .
-```
-
-This creates an AAR (Android Archive) that can be imported into the Android project.
-
-### 3. Update Android Build Configuration
-
-Modify `app/build.gradle`:
-
-```gradle
-android {
-    // ... existing configuration ...
-    
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
-}
-
-dependencies {
-    // ... existing dependencies ...
-    
-    // Add the generated AAR
-    implementation files('libs/warpnet.aar')
-}
-```
-
-### 4. Update LibP2PClient.kt
-
-Replace the placeholder methods with actual JNI calls:
-
-```kotlin
-package net.warp.android.network
-
-import warpnetclient.Warpnetclient
-import warpnetclient.WarpNetClient
-
-class LibP2PClient {
-    private var nativeClient: WarpNetClient? = null
-    
-    private fun initializeNativeClient(config: NodeConfig): Boolean {
-        return try {
-            nativeClient = Warpnetclient.newClient(config.psk)
-            
-            // Determine which address to use
-            val address = when {
-                config.useRelay && config.relayAddress != null -> config.relayAddress
-                config.lanAddress != null -> config.lanAddress
-                config.remoteAddress != null -> config.remoteAddress
-                else -> return false
-            }
-            
-            nativeClient?.connect(config.peerId, address)
-            true
-        } catch (e: Exception) {
-            Log.e(TAG, "Native client initialization failed", e)
-            false
-        }
-    }
-    
-    private fun sendToNativeClient(endpoint: String, data: String): String {
-        return try {
-            val response = nativeClient?.sendMessage(endpoint, data.toByteArray())
-            String(response ?: byteArrayOf())
-        } catch (e: Exception) {
-            Log.e(TAG, "Send failed", e)
-            throw e
-        }
-    }
-    
-    private fun shutdownNativeClient() {
-        nativeClient?.close()
-        nativeClient = null
-    }
-}
-```
-
-## Testing
-
-### Unit Tests
-
-Create unit tests for the Go code:
-
-```go
-func TestClientCreation(t *testing.T) {
-    client, err := NewClient(nil)
-    if err != nil {
-        t.Fatalf("Failed to create client: %v", err)
-    }
-    defer client.Close()
-    
-    if client.host == nil {
-        t.Fatal("Host is nil")
-    }
-}
-
-func TestClientWithPSK(t *testing.T) {
-    psk := make([]byte, 32)
-    rand.Read(psk)
-    
-    client, err := NewClient(psk)
-    if err != nil {
-        t.Fatalf("Failed to create client with PSK: %v", err)
-    }
-    defer client.Close()
-}
-```
-
-### Integration Tests
-
-Test the connection to a local WarpNet node:
-
-```kotlin
-@Test
-fun testConnectionToLocalNode() = runBlocking {
-    val config = NodeConfig(
-        peerId = "12D3KooWTest...",
-        lanAddress = "/ip4/192.168.1.100/tcp/4001",
-        sessionToken = "test-token"
-    )
-    
-    val client = LibP2PClient.getInstance()
-    val result = client.connect(config)
-    
-    assertTrue(result.isSuccess)
-    assertEquals(ConnectionStatus.CONNECTED, client.getStatus())
-}
-```
+- [WarpNet Desktop Node](https://github.com/Warp-net/warpnet)
+- [Noise Protocol](https://noiseprotocol.org/)
 
 ## Desktop Node Requirements
 
 The desktop WarpNet node must:
 
-1. **Expose an API** for mobile clients:
-   - Feed retrieval
-   - Post creation
-   - Notifications
-   - Messages
+1. **Listen for connections** from mobile clients
+2. **Accept incoming streams** for API requests
+3. **Implement protocols**:
+   - `/warpnet/api/feed/1.0.0` - Feed retrieval
+   - `/warpnet/api/post/1.0.0` - Post creation
+   - `/warpnet/api/notifications/1.0.0` - Notifications
+   - `/warpnet/api/messages/1.0.0` - Messages
+   - And other API endpoints as defined in DESKTOP_API_SPEC.md
 
-2. **Generate QR codes** containing:
+4. **Generate QR codes** with connection info:
    ```json
    {
      "peerId": "12D3KooW...",
-     "addresses": [
-       "/ip4/192.168.1.100/tcp/4001",
-       "/ip4/public.ip/tcp/4001"
-     ],
-     "sessionToken": "base64-encoded-token",
-     "psk": "base64-encoded-psk"
+     "addresses": ["/ip4/192.168.1.100/tcp/4001"],
+     "sessionToken": "base64-token",
+     "psk": "base64-psk"
    }
    ```
 
-3. **Authenticate mobile clients** using session tokens
-
-4. **Support libp2p streams** for bidirectional communication
+5. **Authenticate sessions** using session tokens
+6. **Support Noise encryption** on all streams
+7. **Optional PSK** for private network isolation
 
 ## Security Considerations
 
-1. **Session Tokens**: Should expire after a reasonable time
-2. **PSK Rotation**: Consider rotating PSKs periodically
-3. **Certificate Pinning**: Pin the desktop node's peer ID
-4. **Secure Storage**: Store PSK and tokens securely on Android (EncryptedSharedPreferences)
+1. **Session Tokens**: Should expire after reasonable time (e.g., 24 hours)
+2. **PSK Storage**: Store PSK securely using Android's EncryptedSharedPreferences
+3. **Peer ID Pinning**: Verify desktop node's peer ID matches expected value
+4. **Transport Security**: All communication encrypted with Noise protocol
+5. **Network Security**: Support both LAN and relay connections
 
-## Alternative: Pure Go Implementation
+## Troubleshooting
 
-Instead of gomobile, you could:
+### Build Issues
 
-1. Build a standalone Go binary for Android
-2. Run it as a background service
-3. Use IPC (sockets, intent services) to communicate
-
-This avoids gomobile complexity but adds other challenges.
-
-## Dependencies
-
-Required Go modules:
-```
-github.com/libp2p/go-libp2p
-github.com/libp2p/go-libp2p/core
-github.com/libp2p/go-libp2p/p2p/security/noise
-github.com/libp2p/go-libp2p/p2p/transport/tcp
-github.com/libp2p/go-libp2p-pnet
+**Problem**: `gomobile not found`
+```bash
+go install golang.org/x/mobile/cmd/gomobile@latest
+gomobile init
 ```
 
-## References
+**Problem**: `Android SDK/NDK not found`
+- Set `ANDROID_HOME` environment variable
+- Install NDK via Android Studio
 
-- [libp2p Documentation](https://docs.libp2p.io/)
-- [gomobile Documentation](https://pkg.go.dev/golang.org/x/mobile)
-- [libp2p Examples](https://github.com/libp2p/go-libp2p/tree/master/examples)
-- [Noise Protocol](https://noiseprotocol.org/)
+**Problem**: `Go dependencies fail to download`
+```bash
+cd native/warpnet-client
+go clean -modcache
+go mod download
+```
+
+### Runtime Issues
+
+**Problem**: `UnsatisfiedLinkError: couldn't find "libgojni.so"`
+- Ensure `warpnet.aar` was built successfully
+- Check that AAR contains native libraries for your device's architecture
+- Rebuild with: `gomobile bind -target=android/arm64,android/amd64 ...`
+
+**Problem**: `Connection failed`
+- Verify desktop node is running and reachable
+- Check firewall settings
+- Verify peer ID and multiaddr are correct
+- Check network connectivity
+
+## Next Steps
+
+1. **Build the native library** using the provided scripts
+2. **Test on a device** with a running desktop node
+3. **Implement desktop node API** according to DESKTOP_API_SPEC.md
+4. **Add comprehensive error handling**
+5. **Implement reconnection logic** for mobile network changes
+6. **Add background service** for maintaining connection
+7. **Implement notification handling** for incoming messages
+
+## File Structure
+
+```
+warpnet-android/
+├── native/
+│   └── warpnet-client/           # Go libp2p implementation
+│       ├── client.go             # Core client logic
+│       ├── mobile.go             # Gomobile wrapper
+│       ├── go.mod                # Go dependencies
+│       └── README.md             # Build instructions
+├── app/
+│   ├── libs/
+│   │   └── warpnet.aar          # Built native library (generated)
+│   ├── src/main/java/net/warp/android/
+│   │   └── network/
+│   │       └── LibP2PClient.kt  # JNI bridge
+│   └── build.gradle             # Android dependencies
+├── scripts/
+│   └── build-native.sh          # Native build script
+└── LIBP2P_INTEGRATION.md        # This file
+```
