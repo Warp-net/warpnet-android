@@ -80,7 +80,7 @@ The client is configured as a thin client matching WarpNet requirements:
 - `libp2p.Security(noise.ID, noise.New)` - Noise protocol encryption
 - `libp2p.Transport(tcp.NewTCPTransport)` - TCP transport
 - `libp2p.UserAgent("warpnet-android/1.0")` - Custom user agent
-- `libp2p.PrivateNetwork(pnet.PSK(psk))` - Optional PSK for private networks
+- `libp2p.PrivateNetwork(pnet.NewProtector(psk))` - Optional PSK for private networks
 
 ## Testing
 

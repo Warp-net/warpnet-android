@@ -36,7 +36,8 @@ func NewClient(psk []byte) (*WarpNetClient, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Generate a new private key for this client instance
-	privKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, 2048, rand.Reader)
+	// Ed25519 has a fixed key size, so the second parameter is ignored (-1 is recommended)
+	privKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, -1, rand.Reader)
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to generate key pair: %w", err)
@@ -58,6 +59,9 @@ func NewClient(psk []byte) (*WarpNetClient, error) {
 	// Add PSK if provided for private network support
 	if psk != nil && len(psk) == 32 {
 		opts = append(opts, libp2p.PrivateNetwork(pnet.NewProtector(psk)))
+	} else if psk != nil {
+		cancel()
+		return nil, fmt.Errorf("PSK must be exactly 32 bytes, got %d bytes", len(psk))
 	}
 
 	// Create the libp2p host

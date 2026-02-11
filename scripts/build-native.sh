@@ -14,7 +14,7 @@ if ! command -v gomobile &> /dev/null; then
 fi
 
 # Navigate to the native client directory
-cd "$(dirname "$0")/native/warpnet-client"
+cd "$(dirname "$0")/../native/warpnet-client"
 
 # Fetch Go dependencies
 echo "Fetching Go dependencies..."
