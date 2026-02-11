@@ -55,9 +55,7 @@ class LibP2PClient {
             
             // Initialize native client if not already initialized
             if (!isInitialized) {
-                // Encode PSK as base64 for native layer
-                // Note: Using NO_WRAP to avoid newlines, which is compatible with
-                // Go's base64.StdEncoding (the decoder handles both with and without newlines)
+                // Encode PSK as base64 without newlines for native layer compatibility
                 val pskBase64 = config.psk?.let { 
                     Base64.encodeToString(it, Base64.NO_WRAP)
                 } ?: ""

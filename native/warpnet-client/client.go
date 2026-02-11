@@ -36,7 +36,7 @@ func NewClient(psk []byte) (*WarpNetClient, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Generate a new private key for this client instance
-	// Ed25519 has a fixed key size, so the second parameter is ignored (-1 is recommended)
+	// Ed25519 has a fixed key size, so -1 is used when the parameter is not applicable
 	privKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, -1, rand.Reader)
 	if err != nil {
 		cancel()
