@@ -7,9 +7,10 @@ import io.libp2p.core.crypto.PrivKey
 import io.libp2p.core.crypto.generateKeyPair
 import io.libp2p.core.crypto.unmarshalPrivateKey
 import io.libp2p.core.multiformats.Multiaddr
+import io.libp2p.core.crypto.KEY_TYPE
 import io.libp2p.etc.types.toByteArray
 import io.libp2p.etc.types.toProtobuf
-import io.libp2p.host.builder.HostBuilder
+import io.libp2p.host.HostBuilder
 import kotlinx.coroutines.*
 import net.warp.android.data.ConnectionStatus
 import net.warp.android.data.NodeConfig
@@ -125,7 +126,7 @@ class LibP2PClient {
     private fun initializeLibP2PHost(config: NodeConfig): Boolean {
         return try {
             // Generate or load client private key
-            val privKey: PrivKey = generateKeyPair().second
+            val privKey: PrivKey = generateKeyPair(KEY_TYPE.ED25519).first
             
             // Build libp2p host with client-only configuration matching requirements:
             // - libp2p.Identity(privKey)
