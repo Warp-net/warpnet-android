@@ -69,19 +69,21 @@ class LibP2PClient {
                 Log.d(TAG, "Native client initialized")
             }
             
-            // Determine which address to use
-            val address = when {
-                config.useRelay && config.relayAddress != null -> config.relayAddress
-                config.lanAddress != null -> config.lanAddress
-                config.remoteAddress != null -> config.remoteAddress
-                else -> {
-                    updateStatus(ConnectionStatus.ERROR)
-                    return@withContext Result.failure(Exception("No valid address available"))
-                }
+            // Determine which address to use - use first bootstrap node
+            val address = config.bootstrapNodes.firstOrNull()
+                ?: return@withContext Result.failure(Exception("No bootstrap nodes available"))
+            
+            // Extract peer ID and address from multiaddr
+            // Format: /ip4/207.154.221.44/tcp/4001/p2p/12D3KooW...
+            val parts = address.split("/p2p/")
+            val targetAddress = if (parts.size == 2) {
+                parts[0] // Just the /ip4/.../tcp/... part
+            } else {
+                return@withContext Result.failure(Exception("Invalid bootstrap node format"))
             }
             
-            // Connect to desktop node
-            val connectError = Warpnetclient.connectToNode(config.peerId, address)
+            // Connect to desktop node using peer ID from config and first bootstrap address
+            val connectError = Warpnetclient.connectToNode(config.peerId, targetAddress)
             if (connectError.isNotEmpty()) {
                 updateStatus(ConnectionStatus.ERROR)
                 return@withContext Result.failure(Exception("Connection failed: $connectError"))
@@ -191,38 +193,6 @@ class LibP2PClient {
     private fun updateStatus(status: ConnectionStatus) {
         connectionStatus.set(status)
         listeners.forEach { it.onStatusChanged(status) }
-    }
-    
-    /**
-     * Get the client's peer ID
-     */
-    fun getClientPeerID(): String {
-        return try {
-            if (isInitialized) {
-                Warpnetclient.getClientPeerID()
-            } else {
-                ""
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting peer ID", e)
-            ""
-        }
-    }
-    
-    /**
-     * Check connection status via native client
-     */
-    fun checkNativeConnection(): Boolean {
-        return try {
-            if (isInitialized) {
-                Warpnetclient.checkConnection() == "true"
-            } else {
-                false
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error checking connection", e)
-            false
-        }
     }
     
     interface ConnectionListener {
