@@ -2,6 +2,8 @@ module github.com/Warp-net/warpnet-android/native/warpnet-client
 
 go 1.25.0
 
+tool golang.org/x/tools/cmd/stringer
+
 require (
 	github.com/libp2p/go-libp2p v0.35.0
 	github.com/multiformats/go-multiaddr v0.12.4

@@ -28,10 +28,9 @@ go get golang.org/x/mobile/bind
 
 # Build for Android
 
-pwd
-go env GOMOD
-
 echo "Building Android library..."
 gomobile bind -v -androidapi 21 -target=android -o warpnet.aar .
+mv warpnet.aar ../../app/libs/warpnet.aar
+mv warpnet-sources.jar ../../app/libs/warpnet-sources.jar
 
 echo "Build complete! Library created at app/libs/warpnet.aar"
