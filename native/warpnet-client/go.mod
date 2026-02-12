@@ -1,6 +1,6 @@
 module github.com/Warp-net/warpnet-android/native/warpnet-client
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/libp2p/go-libp2p v0.35.0
@@ -97,6 +97,7 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
+	golang.org/x/mobile v0.0.0-20260211191516-dcd2a3258864 // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect

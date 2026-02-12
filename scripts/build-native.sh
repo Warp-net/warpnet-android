@@ -22,6 +22,10 @@ echo "Fetching Go dependencies..."
 go mod download
 go mod tidy
 
+# Add golang.org/x/mobile dependency required by gomobile bind
+echo "Adding gomobile dependencies..."
+go get golang.org/x/mobile/bind
+
 # Build for Android
 
 pwd
