@@ -17,7 +17,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	noise "github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
-	pnet "github.com/libp2p/go-libp2p-pnet"
 	"github.com/multiformats/go-multiaddr"
 )
 
@@ -45,20 +44,20 @@ func NewClient(psk []byte) (*WarpNetClient, error) {
 
 	// Build libp2p options matching thin client requirements
 	opts := []libp2p.Option{
-		libp2p.Identity(privKey),           // Client identity
-		libp2p.NoListenAddrs,               // Client-only mode - no listening
-		libp2p.DisableMetrics(),            // Lightweight
-		libp2p.DisableRelay(),              // No relay listening
-		libp2p.Ping(true),                  // Enable ping for connectivity checks
-		libp2p.Security(noise.ID, noise.New), // Noise protocol for encryption
-		libp2p.Transport(tcp.NewTCPTransport), // TCP transport
-		libp2p.UserAgent("warpnet-android/1.0"), // Custom user agent
+		libp2p.Identity(privKey),                 // Client identity
+		libp2p.NoListenAddrs,                     // Client-only mode - no listening
+		libp2p.DisableMetrics(),                  // Lightweight
+		libp2p.DisableRelay(),                    // No relay listening
+		libp2p.Ping(true),                        // Enable ping for connectivity checks
+		libp2p.Security(noise.ID, noise.New),     // Noise protocol for encryption
+		libp2p.Transport(tcp.NewTCPTransport),    // TCP transport
+		libp2p.UserAgent("warpnet-android"),      // Custom user agent
 		libp2p.DisableIdentifyAddressDiscovery(), // Disable address discovery (client-only)
 	}
 
 	// Add PSK if provided for private network support
 	if psk != nil && len(psk) == 32 {
-		opts = append(opts, libp2p.PrivateNetwork(pnet.NewProtector(psk)))
+		opts = append(opts, libp2p.PrivateNetwork(psk))
 	} else if psk != nil {
 		cancel()
 		return nil, fmt.Errorf("PSK must be exactly 32 bytes, got %d bytes", len(psk))

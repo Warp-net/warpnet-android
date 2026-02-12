@@ -9,6 +9,7 @@ echo "Building WarpNet native library for Android..."
 if ! command -v gomobile &> /dev/null; then
     echo "Error: gomobile not found. Install it with:"
     echo "  go install golang.org/x/mobile/cmd/gomobile@latest"
+    echo "  go install golang.org/x/mobile/cmd/gobind@latest"
     echo "  gomobile init"
     exit 1
 fi
@@ -22,7 +23,11 @@ go mod download
 go mod tidy
 
 # Build for Android
+
+pwd
+go env GOMOD
+
 echo "Building Android library..."
-gomobile bind -v -target=android -o ../../app/libs/warpnet.aar .
+gomobile bind -v -androidapi 21 -target=android -o warpnet.aar .
 
 echo "Build complete! Library created at app/libs/warpnet.aar"
