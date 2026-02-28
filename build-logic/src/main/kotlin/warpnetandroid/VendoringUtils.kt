@@ -34,7 +34,7 @@ fun Project.findRuntimeConfigurationForVendoring(): Configuration? {
  */
 fun Project.registerVendorDependenciesTask(moduleName: String) {
     afterEvaluate {
-        tasks.register<Copy>("vendorDependencies") {
+        tasks.register("vendorDependencies", Copy::class.java) {
             val runtimeDeps = findRuntimeConfigurationForVendoring()
             
             if (runtimeDeps != null) {
