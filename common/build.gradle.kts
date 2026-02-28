@@ -125,7 +125,7 @@ buildkonfig {
 android {
     sourceSets["androidTest"].assets.srcDirs("$projectDir/schemas")
     defaultConfig {
-        testInstrumentationRunnerArguments["notPackage"] = "com.warpnet.warpnet-android.viewmodel"
+        testInstrumentationRunnerArguments["notPackage"] = "com.warpnet.warpnetandroid.viewmodel"
     }
 
     lint {

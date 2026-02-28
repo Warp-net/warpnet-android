@@ -22,19 +22,19 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
             <meta-data
-                android:name="com.warpnet.warpnet-android.initializer.NotificationChannelInitializer"
+                android:name="com.warpnet.warpnetandroid.initializer.NotificationChannelInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />
             <meta-data
-                android:name="com.warpnet.warpnet-android.initializer.DirectMessageInitializer"
+                android:name="com.warpnet.warpnetandroid.initializer.DirectMessageInitializer"
                 android:value="androidx.startup"
                 tools:node="remove"/>
             <meta-data
-                android:name="com.warpnet.warpnet-android.initializer.NotificationInitializer"
+                android:name="com.warpnet.warpnetandroid.initializer.NotificationInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />
             <meta-data
-                android:name="com.warpnet.warpnet-android.initializer.WarpnetServiceInitializer"
+                android:name="com.warpnet.warpnetandroid.initializer.WarpnetServiceInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>

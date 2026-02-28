@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.warpnet.warpnet-android">
+    package="com.warpnet.warpnetandroid">
 
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
@@ -25,7 +25,7 @@
         android:theme="@style/Theme.WarpnetAndroid">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.warpnet.warpnet-android.fileprovider"
+            android:authorities="com.warpnet.warpnetandroid.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -34,7 +34,7 @@
         </provider>
 
         <activity
-            android:name="com.warpnet.warpnet-android.LauncherActivity"
+            android:name="com.warpnet.warpnetandroid.LauncherActivity"
             android:exported="true"
             android:icon="${appIcon}"
             android:label="@string/app_name"
@@ -49,12 +49,12 @@
             android:exported="true"
             android:enabled="true"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher"
+            android:name="com.warpnet.warpnetandroid.Launcher"
             android:icon="${appIcon}"
             android:roundIcon="${appIconRound}"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -65,12 +65,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher1"
+            android:name="com.warpnet.warpnetandroid.Launcher1"
             android:icon="@mipmap/ic_launcher_1"
             android:roundIcon="@mipmap/ic_launcher_1_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -81,12 +81,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher2"
+            android:name="com.warpnet.warpnetandroid.Launcher2"
             android:icon="@mipmap/ic_launcher_2"
             android:roundIcon="@mipmap/ic_launcher_2_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -97,12 +97,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher3"
+            android:name="com.warpnet.warpnetandroid.Launcher3"
             android:icon="@mipmap/ic_launcher_3"
             android:roundIcon="@mipmap/ic_launcher_3_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -113,12 +113,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher4"
+            android:name="com.warpnet.warpnetandroid.Launcher4"
             android:icon="@mipmap/ic_launcher_4"
             android:roundIcon="@mipmap/ic_launcher_4_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -129,12 +129,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher5"
+            android:name="com.warpnet.warpnetandroid.Launcher5"
             android:icon="@mipmap/ic_launcher_5"
             android:roundIcon="@mipmap/ic_launcher_5_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -145,12 +145,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher6"
+            android:name="com.warpnet.warpnetandroid.Launcher6"
             android:icon="@mipmap/ic_launcher_6"
             android:roundIcon="@mipmap/ic_launcher_6_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -162,12 +162,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher7"
+            android:name="com.warpnet.warpnetandroid.Launcher7"
             android:icon="@mipmap/ic_launcher_7"
             android:roundIcon="@mipmap/ic_launcher_7_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -178,12 +178,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher8"
+            android:name="com.warpnet.warpnetandroid.Launcher8"
             android:icon="@mipmap/ic_launcher_8"
             android:roundIcon="@mipmap/ic_launcher_8_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -194,12 +194,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher9"
+            android:name="com.warpnet.warpnetandroid.Launcher9"
             android:icon="@mipmap/ic_launcher_9"
             android:roundIcon="@mipmap/ic_launcher_9_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -210,12 +210,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher10"
+            android:name="com.warpnet.warpnetandroid.Launcher10"
             android:icon="@mipmap/ic_launcher_10"
             android:roundIcon="@mipmap/ic_launcher_10_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -227,12 +227,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher11"
+            android:name="com.warpnet.warpnetandroid.Launcher11"
             android:icon="@mipmap/ic_launcher_11"
             android:roundIcon="@mipmap/ic_launcher_11_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -243,12 +243,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher12"
+            android:name="com.warpnet.warpnetandroid.Launcher12"
             android:icon="@mipmap/ic_launcher_12"
             android:roundIcon="@mipmap/ic_launcher_12_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -260,12 +260,12 @@
             android:exported="true"
             android:enabled="false"
             android:launchMode="singleTop"
-            android:name="com.warpnet.warpnet-android.Launcher13"
+            android:name="com.warpnet.warpnetandroid.Launcher13"
             android:icon="@mipmap/ic_launcher_13"
             android:roundIcon="@mipmap/ic_launcher_13_round"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
-            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            android:targetActivity="com.warpnet.warpnetandroid.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -278,7 +278,7 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:hardwareAccelerated="true"
-            android:name="com.warpnet.warpnet-android.WarpnetAndroidActivity"
+            android:name="com.warpnet.warpnetandroid.WarpnetAndroidActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.WarpnetAndroid"
             android:icon="${appIcon}"
