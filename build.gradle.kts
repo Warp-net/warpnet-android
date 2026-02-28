@@ -28,11 +28,11 @@ afterEvaluate {
 
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = Versions.Java.jvmTarget
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(Versions.Java.jvmTarget))
 
-            allWarningsAsErrors = true
-            freeCompilerArgs = freeCompilerArgs + listOf(
+            allWarningsAsErrors.set(true)
+            freeCompilerArgs.addAll(
                 "-Xcontext-receivers",
                 "-Xskip-prerelease-check"
             )

@@ -26,6 +26,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
         }
       }
       androidApplication {
+        namespace = Package.id
         compileSdk = Versions.Android.compile
         defaultConfig {
           applicationId = Package.id

@@ -6,7 +6,9 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 fun KotlinJvmTarget.setupJvm() {
   compilations.all {
-    kotlinOptions.jvmTarget = Versions.Java.jvmTarget
+    compilerOptions.configure {
+      jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(Versions.Java.jvmTarget))
+    }
   }
 }
 
