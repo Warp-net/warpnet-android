@@ -20,34 +20,59 @@
  */
 package com.warpnet.warpnetandroid.preferences
 
-import androidx.datastore.core.DataStore
 import com.warpnet.warpnetandroid.preferences.model.AccountPreferences
 import com.warpnet.warpnetandroid.preferences.model.AppearancePreferences
 import com.warpnet.warpnetandroid.preferences.model.DisplayPreferences
 import com.warpnet.warpnetandroid.preferences.model.MiscPreferences
 import com.warpnet.warpnetandroid.preferences.model.NotificationPreferences
 import com.warpnet.warpnetandroid.preferences.model.SwipePreferences
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * In-memory preferences holder that doesn't persist data.
+ * All preferences are kept in memory and reset when the app restarts.
+ */
 data class PreferencesHolder(
-  val accountPreferences: DataStore<AccountPreferences>,
-  val appearancePreferences: DataStore<AppearancePreferences>,
-  val displayPreferences: DataStore<DisplayPreferences>,
-  val miscPreferences: DataStore<MiscPreferences>,
-  val notificationPreferences: DataStore<NotificationPreferences>,
-  val swipePreferences: DataStore<SwipePreferences>,
+  private val accountPreferencesFlow: MutableStateFlow<AccountPreferences> = MutableStateFlow(AccountPreferences()),
+  private val appearancePreferencesFlow: MutableStateFlow<AppearancePreferences> = MutableStateFlow(AppearancePreferences()),
+  private val displayPreferencesFlow: MutableStateFlow<DisplayPreferences> = MutableStateFlow(DisplayPreferences()),
+  private val miscPreferencesFlow: MutableStateFlow<MiscPreferences> = MutableStateFlow(MiscPreferences()),
+  private val notificationPreferencesFlow: MutableStateFlow<NotificationPreferences> = MutableStateFlow(NotificationPreferences()),
+  private val swipePreferencesFlow: MutableStateFlow<SwipePreferences> = MutableStateFlow(SwipePreferences()),
 ) {
-  suspend fun warmup() = coroutineScope {
-    awaitAll(
-      async { accountPreferences.data.firstOrNull() },
-      async { appearancePreferences.data.firstOrNull() },
-      async { displayPreferences.data.firstOrNull() },
-      async { miscPreferences.data.firstOrNull() },
-      async { notificationPreferences.data.firstOrNull() },
-      async { swipePreferences.data.firstOrNull() },
-    )
+  val accountPreferences: Flow<AccountPreferences> = accountPreferencesFlow
+  val appearancePreferences: Flow<AppearancePreferences> = appearancePreferencesFlow
+  val displayPreferences: Flow<DisplayPreferences> = displayPreferencesFlow
+  val miscPreferences: Flow<MiscPreferences> = miscPreferencesFlow
+  val notificationPreferences: Flow<NotificationPreferences> = notificationPreferencesFlow
+  val swipePreferences: Flow<SwipePreferences> = swipePreferencesFlow
+
+  suspend fun updateAccountPreferences(transform: (AccountPreferences) -> AccountPreferences) {
+    accountPreferencesFlow.value = transform(accountPreferencesFlow.value)
+  }
+
+  suspend fun updateAppearancePreferences(transform: (AppearancePreferences) -> AppearancePreferences) {
+    appearancePreferencesFlow.value = transform(appearancePreferencesFlow.value)
+  }
+
+  suspend fun updateDisplayPreferences(transform: (DisplayPreferences) -> DisplayPreferences) {
+    displayPreferencesFlow.value = transform(displayPreferencesFlow.value)
+  }
+
+  suspend fun updateMiscPreferences(transform: (MiscPreferences) -> MiscPreferences) {
+    miscPreferencesFlow.value = transform(miscPreferencesFlow.value)
+  }
+
+  suspend fun updateNotificationPreferences(transform: (NotificationPreferences) -> NotificationPreferences) {
+    notificationPreferencesFlow.value = transform(notificationPreferencesFlow.value)
+  }
+
+  suspend fun updateSwipePreferences(transform: (SwipePreferences) -> SwipePreferences) {
+    swipePreferencesFlow.value = transform(swipePreferencesFlow.value)
+  }
+
+  suspend fun warmup() {
+    // No-op for in-memory implementation
   }
 }

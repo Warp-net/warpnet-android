@@ -18,15 +18,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.model
+package com.warpnet.warpnetandroid.db.dao
 
-import android.content.Context
+import androidx.paging.PagingSource
+import com.warpnet.warpnetandroid.model.MicroBlogKey
+import com.warpnet.warpnetandroid.model.ui.UiDMConversation
 
-/**
- * Creates in-memory account preferences (no persistence).
- */
-actual class AccountPreferencesFactory(
-  private val context: Context,
-) {
-  actual fun create(accountKey: MicroBlogKey) = AccountPreferences()
+interface DirectMessageConversationDao {
+  fun getPagingSource(accountKey: MicroBlogKey): PagingSource<Int, UiDMConversation>
 }

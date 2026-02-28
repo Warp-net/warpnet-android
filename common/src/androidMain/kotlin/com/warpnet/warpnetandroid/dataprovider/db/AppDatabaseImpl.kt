@@ -20,30 +20,27 @@
  */
 package com.warpnet.warpnetandroid.dataprovider.db
 
-import androidx.room.withTransaction
-import com.warpnet.warpnetandroid.dataprovider.db.dao.DraftDaoImpl
-import com.warpnet.warpnetandroid.dataprovider.db.dao.SearchDaoImpl
 import com.warpnet.warpnetandroid.db.AppDatabase
 import com.warpnet.warpnetandroid.db.dao.DraftDao
 import com.warpnet.warpnetandroid.db.dao.SearchDao
-import com.warpnet.warpnetandroid.room.db.RoomAppDatabase
 
-internal class AppDatabaseImpl(private val roomDatabase: RoomAppDatabase) : AppDatabase {
-  private val draftDao = DraftDaoImpl(roomDatabase.draftDao())
-  private val searchDao = SearchDaoImpl(roomDatabase)
-  override fun draftDao(): DraftDao {
-    return draftDao
-  }
+/**
+ * In-memory implementation of AppDatabase that doesn't persist data.
+ */
+internal class AppDatabaseImpl : AppDatabase {
+  private val draftDao = object : DraftDao {}
+  private val searchDao = object : SearchDao {}
 
-  override fun searchDao(): SearchDao {
-    return searchDao
-  }
+  override fun draftDao(): DraftDao = draftDao
+
+  override fun searchDao(): SearchDao = searchDao
 
   override suspend fun clearAllTables() {
-    roomDatabase.clearAllTables()
+    // No-op for in-memory implementation
   }
 
-  override suspend fun <R> withTransaction(block: suspend () -> R) = roomDatabase.withTransaction {
-    block.invoke()
+  override suspend fun <R> withTransaction(block: suspend () -> R): R {
+    // Execute block directly without transaction support
+    return block()
   }
 }

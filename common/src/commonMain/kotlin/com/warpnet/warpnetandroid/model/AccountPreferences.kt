@@ -20,63 +20,35 @@
  */
 package com.warpnet.warpnetandroid.model
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
-class AccountPreferences(
-  private val dataStore: DataStore<Preferences>,
-  private val scope: CoroutineScope,
-) {
-  private val isNotificationEnabledKey = booleanPreferencesKey("isNotificationEnabled")
-  val isNotificationEnabled
-    get() = dataStore.data.map { preferences ->
-      preferences[isNotificationEnabledKey] ?: true
-    }
-  val homeMenuOrder
-    get() = dataStore.data.map { preferences ->
-      if (!preferences.contains(homeMenuOrderKey) || !preferences.contains(visibleHomeMenuKey)) {
-        HomeMenus.values().map { it to it.showDefault }
-      } else {
-        val order = preferences[homeMenuOrderKey].orEmpty()
-          .split(",")
-          .withIndex()
-          .associate { HomeMenus.valueOf(it.value) to it.index }
-        val visible = preferences[visibleHomeMenuKey].orEmpty().split(",")
-        HomeMenus.values().sortedBy {
-          order[it]
-        }.map { it to visible.contains(it.name) }
-      }
-    }
+/**
+ * In-memory account preferences (no persistence).
+ */
+class AccountPreferences {
+  private val isNotificationEnabledFlow = MutableStateFlow(true)
+  private val homeMenuOrderFlow = MutableStateFlow<List<Pair<HomeMenus, Boolean>>>(
+    HomeMenus.values().map { it to it.showDefault }
+  )
+
+  val isNotificationEnabled: Flow<Boolean>
+    get() = isNotificationEnabledFlow
+
+  val homeMenuOrder: Flow<List<Pair<HomeMenus, Boolean>>>
+    get() = homeMenuOrderFlow
 
   suspend fun setIsNotificationEnabled(value: Boolean) {
-    dataStore.edit {
-      it[isNotificationEnabledKey] = value
-    }
+    isNotificationEnabledFlow.value = value
   }
 
   fun close() {
-    // cancel scope will remove file from activeFiles in Datastore
-    // prevent crashes caused by multiple DataStores active for the same file
-    scope.cancel()
+    // No-op for in-memory implementation
   }
 
-  private val homeMenuOrderKey = stringPreferencesKey("homeMenuOrder")
-  private val visibleHomeMenuKey = stringPreferencesKey("visibleHomeMenu")
-  suspend fun setHomeMenuOrder(
-    data: List<Pair<HomeMenus, Boolean>>,
-  ) {
-    dataStore.edit {
-      it[visibleHomeMenuKey] = data.filter { it.second }.joinToString(",") { it.first.name }
-    }
-    dataStore.edit {
-      it[homeMenuOrderKey] = data.joinToString(",") { it.first.name }
-    }
+  suspend fun setHomeMenuOrder(data: List<Pair<HomeMenus, Boolean>>) {
+    homeMenuOrderFlow.value = data
   }
 }
 

@@ -28,7 +28,7 @@ import com.warpnet.warpnetandroid.dataprovider.mapper.Strings
 import dev.icerock.moko.resources.FileResource
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class SwipePreferences(
   val useSwipeGestures: Boolean = false,
   val rightShort: SwipeGesture.RightShort = SwipeGesture.RightShort(),
@@ -38,16 +38,16 @@ data class SwipePreferences(
 )
 
 sealed interface SwipeGesture {
-  @Serializable
+  
   data class RightShort(val action: SwipeActionType = SwipeActionType.Reply) : SwipeGesture
 
-  @Serializable
+  
   data class RightLong(val action: SwipeActionType = SwipeActionType.Repost) : SwipeGesture
 
-  @Serializable
+  
   data class LeftShort(val action: SwipeActionType = SwipeActionType.Share) : SwipeGesture
 
-  @Serializable
+  
   data class LeftLong(val action: SwipeActionType = SwipeActionType.Like) : SwipeGesture
 }
 
@@ -59,7 +59,7 @@ fun SwipeGesture.tittle() = when (this) {
   is SwipeGesture.RightLong -> stringResource(res = Strings.scene_settings_swipe_gestures_gestures_right_long)
 }
 
-@Serializable
+
 enum class SwipeActionType {
   None,
   Reply,

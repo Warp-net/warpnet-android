@@ -18,15 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.model
+package com.warpnet.warpnetandroid.db.dao
 
-import android.content.Context
+import androidx.paging.PagingSource
+import com.warpnet.warpnetandroid.model.MicroBlogKey
+import com.warpnet.warpnetandroid.model.paging.PagingTimeLineWithStatus
+import com.warpnet.warpnetandroid.model.paging.PagingTimeLine
 
-/**
- * Creates in-memory account preferences (no persistence).
- */
-actual class AccountPreferencesFactory(
-  private val context: Context,
-) {
-  actual fun create(accountKey: MicroBlogKey) = AccountPreferences()
+interface PagingTimelineDao {
+  suspend fun insertAll(items: List<PagingTimeLine>)
+  fun findWithStatusKey(statusKey: MicroBlogKey, accountKey: MicroBlogKey): PagingTimeLineWithStatus?
+  suspend fun clearAll(pagingKey: String, accountKey: MicroBlogKey)
+  fun getPagingSource(pagingKey: String, accountKey: MicroBlogKey): PagingSource<Int, PagingTimeLineWithStatus>
+  fun getLatest(pagingKey: String, accountKey: MicroBlogKey): PagingTimeLineWithStatus?
 }

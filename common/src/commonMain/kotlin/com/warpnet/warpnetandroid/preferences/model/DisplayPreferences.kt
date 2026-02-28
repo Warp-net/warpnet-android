@@ -23,7 +23,7 @@ package com.warpnet.warpnetandroid.preferences.model
 import com.warpnet.warpnetandroid.kmp.AppIcon
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class DisplayPreferences(
   val useSystemFontSize: Boolean = true,
   val fontScale: Float = 1f,
@@ -38,20 +38,20 @@ data class DisplayPreferences(
   val showStatusNumbers: Boolean = true,
   val appIcon: AppIcon = AppIcon.DEFAULT,
 ) {
-  @Serializable
+  
   enum class AvatarStyle {
     Round,
     Square,
   }
 
-  @Serializable
+  
   enum class AutoPlayback {
     Auto,
     Always,
     Off,
   }
 
-  @Serializable
+  
   enum class DateFormat {
     RELATIVE,
     ABSOLUTE,

@@ -50,20 +50,20 @@ fun ProvidePreferences(
   content: @Composable () -> Unit,
 ) {
   val accountConfig by holder.accountPreferences
-    .data
+    
     .collectAsState(initial = AccountPreferences())
   val swipeConfig by holder.swipePreferences
-    .data
+    
     .collectAsState(initial = SwipePreferences())
   val appearances by holder.appearancePreferences
-    .data
+    
     .collectAsState(initial = AppearancePreferences())
   val display by holder.displayPreferences
-    .data
+    
     .collectAsState(initial = DisplayPreferences())
-  val proxyConfigFlow = remember(holder.miscPreferences.data) {
+  val proxyConfigFlow = remember(holder.miscPreferences) {
     holder.miscPreferences
-      .data
+      
       .map {
         HttpConfig(
           proxyConfig = ProxyConfig(

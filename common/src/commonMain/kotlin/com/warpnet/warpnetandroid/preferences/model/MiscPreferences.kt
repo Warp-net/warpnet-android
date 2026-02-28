@@ -22,7 +22,7 @@ package com.warpnet.warpnetandroid.preferences.model
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class MiscPreferences(
   val nitterInstance: String = "",
   val useProxy: Boolean = false,
@@ -32,7 +32,7 @@ data class MiscPreferences(
   val proxyUserName: String = "",
   val proxyPassword: String = "",
 ) {
-  @Serializable
+  
   enum class ProxyType {
     HTTP,
     SOCKS,

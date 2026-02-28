@@ -25,7 +25,7 @@ import com.warpnet.warpnetandroid.component.stringResource
 import com.warpnet.warpnetandroid.dataprovider.mapper.Strings
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class AppearancePreferences(
   val primaryColorIndex: Int = 0,
   val tabPosition: TabPosition = TabPosition.Bottom,
@@ -41,7 +41,7 @@ data class AppearancePreferences(
   val resetToTop: Boolean = false,
 ) {
 
-  @Serializable
+  
   data class WindowInfo(
     val top: Float = 50f,
     val start: Float = 50f,
@@ -49,26 +49,26 @@ data class AppearancePreferences(
     val height: Float = 800f,
   )
 
-  @Serializable
+  
   enum class TabPosition {
     Top,
     Bottom,
   }
 
-  @Serializable
+  
   enum class TabToTop {
     SingleTap,
     DoubleTap,
   }
 
-  @Serializable
+  
   enum class Theme {
     Auto,
     Light,
     Dark,
   }
 
-  @Serializable
+  
   enum class RefreshInterval(
     val duration: Long,
   ) {

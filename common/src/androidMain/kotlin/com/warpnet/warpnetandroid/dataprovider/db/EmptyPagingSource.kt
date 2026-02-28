@@ -18,15 +18,23 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.model
+package com.warpnet.warpnetandroid.dataprovider.db
 
-import android.content.Context
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 
 /**
- * Creates in-memory account preferences (no persistence).
+ * Empty in-memory PagingSource that returns no data.
+ * Used to replace database-backed PagingSources in a stateless app.
  */
-actual class AccountPreferencesFactory(
-  private val context: Context,
-) {
-  actual fun create(accountKey: MicroBlogKey) = AccountPreferences()
+internal class EmptyPagingSource<T : Any> : PagingSource<Int, T>() {
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
+    return LoadResult.Page(
+      data = emptyList(),
+      prevKey = null,
+      nextKey = null
+    )
+  }
+
+  override fun getRefreshKey(state: PagingState<Int, T>): Int? = null
 }

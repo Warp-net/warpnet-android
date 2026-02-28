@@ -18,15 +18,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.model
-
-import android.content.Context
+package com.warpnet.warpnetandroid.db.dao
 
 /**
- * Creates in-memory account preferences (no persistence).
+ * Empty DAO interface - kept as stub for API compatibility.
+ * No methods are actually used in the codebase based on analysis.
+ * If search functionality is needed, this should be implemented.
  */
-actual class AccountPreferencesFactory(
-  private val context: Context,
-) {
-  actual fun create(accountKey: MicroBlogKey) = AccountPreferences()
-}
+interface SearchDao

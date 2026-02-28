@@ -22,7 +22,7 @@ package com.warpnet.warpnetandroid.preferences.model
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class AccountPreferences(
   val isAlwaysShowSensitiveMedia: Boolean = false,
 )

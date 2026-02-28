@@ -21,16 +21,11 @@
 package com.warpnet.warpnetandroid.dataprovider
 
 import android.content.Context
-import androidx.room.Room
 import com.warpnet.warpnetandroid.dataprovider.db.AppDatabaseImpl
 import com.warpnet.warpnetandroid.dataprovider.db.CacheDatabaseImpl
 import com.warpnet.warpnetandroid.db.AppDatabase
 import com.warpnet.warpnetandroid.db.CacheDatabase
 import com.warpnet.warpnetandroid.di.ext.get
-import com.warpnet.warpnetandroid.room.db.AppDatabase_Migration_1_2
-import com.warpnet.warpnetandroid.room.db.AppDatabase_Migration_2_3
-import com.warpnet.warpnetandroid.room.db.RoomAppDatabase
-import com.warpnet.warpnetandroid.room.db.RoomCacheDatabase
 
 actual class DataProvider private constructor(context: Context) {
   // data provide functions....
@@ -40,16 +35,7 @@ actual class DataProvider private constructor(context: Context) {
     }
   }
 
-  private val roomCacheDatabase = Room.databaseBuilder(context, RoomCacheDatabase::class.java, "warpnet-android-db")
-    .fallbackToDestructiveMigration()
-    .build()
+  actual val appDatabase: AppDatabase = AppDatabaseImpl()
 
-  private val roomAppDatabase = Room.databaseBuilder(context, RoomAppDatabase::class.java, "warpnet-android-draft-db")
-    .addMigrations(AppDatabase_Migration_1_2)
-    .addMigrations(AppDatabase_Migration_2_3)
-    .build()
-
-  actual val appDatabase: AppDatabase = AppDatabaseImpl(roomAppDatabase)
-
-  actual val cacheDatabase: CacheDatabase = CacheDatabaseImpl(roomCacheDatabase)
+  actual val cacheDatabase: CacheDatabase = CacheDatabaseImpl()
 }

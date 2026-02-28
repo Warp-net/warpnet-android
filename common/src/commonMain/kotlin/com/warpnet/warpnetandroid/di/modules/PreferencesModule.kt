@@ -20,62 +20,14 @@
  */
 package com.warpnet.warpnetandroid.di.modules
 
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.core.Serializer
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.warpnet.warpnetandroid.kmp.StorageProvider
-import com.warpnet.warpnetandroid.kmp.appFiles
 import com.warpnet.warpnetandroid.preferences.PreferencesHolder
-import com.warpnet.warpnetandroid.preferences.serializer.AccountPreferencesSerializer
-import com.warpnet.warpnetandroid.preferences.serializer.AppearancePreferencesSerializer
-import com.warpnet.warpnetandroid.preferences.serializer.DisplayPreferencesSerializer
-import com.warpnet.warpnetandroid.preferences.serializer.MiscPreferencesSerializer
-import com.warpnet.warpnetandroid.preferences.serializer.NotificationPreferencesSerializer
-import com.warpnet.warpnetandroid.preferences.serializer.SwipePreferencesSerializer
-import org.koin.core.scope.Scope
 import org.koin.dsl.module
-import java.io.File
 
+/**
+ * Provides in-memory preferences (no persistence).
+ */
 internal val preferencesModule = module {
   single {
-    PreferencesHolder(
-      accountPreferences = createDataStore(
-        "accountConfig.pb",
-        AccountPreferencesSerializer
-      ),
-      appearancePreferences = createDataStore(
-        "appearances.pb",
-        AppearancePreferencesSerializer
-      ),
-      displayPreferences = createDataStore("display.pb", DisplayPreferencesSerializer),
-      miscPreferences = createDataStore("misc.pb", MiscPreferencesSerializer),
-      notificationPreferences = createDataStore(
-        "notification.pb",
-        NotificationPreferencesSerializer
-      ),
-      swipePreferences = createDataStore(
-        "swipe.pb",
-        SwipePreferencesSerializer
-      )
-    )
+    PreferencesHolder()
   }
-  single {
-    PreferenceDataStoreFactory.create {
-      createDataStoreFile("perferences.preferences_pb")
-    }
-  }
-}
-
-internal inline fun <reified T : Any> Scope.createDataStore(
-  name: String,
-  serializer: Serializer<T>,
-) = DataStoreFactory.create(
-  serializer,
-  produceFile = {
-    createDataStoreFile(name)
-  },
-)
-
-private fun Scope.createDataStoreFile(name: String): File {
-  return File(get<StorageProvider>().appFiles.dataStoreFile(name))
 }
