@@ -1,18 +1,29 @@
 import java.util.Properties
 
+dependencies {
+    // Use the simplest possible file reference to avoid the 'module' error
+    implementation(fileTree("libs") { include("*.jar") })
+}
+tasks.register<Copy>("vendorDependencies") {
+    // Explicitly grab the files from the runtime configuration
+    val runtimeDeps = configurations.named("runtimeClasspath").get()
+
+    from(runtimeDeps)
+    into(layout.projectDirectory.dir("vendor/libs"))
+
+    // Optional: filter out directories, just get the JARs
+    eachFile {
+        if (this.relativePath.getFile(destinationDir).exists()) {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        }
+    }
+}
 buildscript {
     repositories {
         google()
     }
 
     dependencies {
-
-        if (file("google-services.json").exists()) {
-            // START Non-FOSS component
-            classpath("com.google.gms:google-services:4.3.14")
-            classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.2")
-            // END Non-FOSS component
-        }
     }
 }
 
@@ -21,44 +32,12 @@ plugins {
     id("warpnet-android.android.application")
 }
 
-if (file("google-services.json").exists()) {
-    // START Non-FOSS component
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
-    // END Non-FOSS component
-}
 
 android {
     lint {
         disable.add("MissingTranslation")
     }
     flavorDimensions.add("channel")
-    productFlavors {
-        if (file("google-services.json").exists()) {
-            // START Non-FOSS component
-            create("google") {
-                dimension = "channel"
-            }
-            // END Non-FOSS component
-        }
-        create("fdroid") {
-            dimension = "channel"
-        }
-    }
-    val file = rootProject.file("signing.properties")
-    val hasSigningProps = file.exists()
-    signingConfigs {
-        if (hasSigningProps) {
-            create("warpnet") {
-                val signingProp = Properties()
-                signingProp.load(file.inputStream())
-                storeFile = rootProject.file(signingProp.getProperty("storeFile"))
-                storePassword = signingProp.getProperty("storePassword")
-                keyAlias = signingProp.getProperty("keyAlias")
-                keyPassword = signingProp.getProperty("keyPassword")
-            }
-        }
-    }
 
     buildTypes {
         debug {
@@ -117,13 +96,4 @@ android {
 dependencies {
     implementation(projects.common)
     implementation(libs.androidx.startup)
-    if (file("google-services.json").exists()) {
-        // START Non-FOSS component
-        val googleImplementation by configurations
-        googleImplementation(platform("com.google.firebase:firebase-bom:31.1.1"))
-        googleImplementation("com.google.firebase:firebase-analytics-ktx")
-        googleImplementation("com.google.firebase:firebase-crashlytics-ktx")
-        googleImplementation("com.google.android.play:core-ktx:1.8.1")
-        // END Non-FOSS component
-    }
 }

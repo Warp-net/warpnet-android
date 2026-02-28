@@ -8,7 +8,6 @@ class KmpPlugin : Plugin<Project> {
     with(target) {
       with(pluginManager) {
         apply("org.jetbrains.kotlin.multiplatform")
-        apply("warpnet-android.spotless")
       }
     }
   }

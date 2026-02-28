@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.gradlePlugin.kotlin)
     implementation(libs.gradlePlugin.compose)
 
-    implementation(libs.gradlePlugin.spotless)
     implementation(libs.gradlePlugin.detekt)
     implementation(libs.gradlePlugin.versionsCheck)
 }
@@ -47,10 +46,6 @@ gradlePlugin {
         //
         // // Tool
         //
-        register("spotless") {
-            id = "warpnet-android.spotless"
-            implementationClass = "warpnetandroid.tool.SpotlessPlugin"
-        }
         register("detekt") {
             id = "warpnet-android.detekt"
             implementationClass = "warpnetandroid.tool.DetektPlugin"

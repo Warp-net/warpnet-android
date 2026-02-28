@@ -12,7 +12,6 @@ okio = "3.2.0"
 okhttp = "4.10.0"
 retrofit2 = "2.9.0"
 sqldelight = "1.5.4"
-spotless = "6.11.0"
 ktlint = "0.46.1"
 detekt = "1.22.0-RC2"
 datastore = "1.1.0-alpha01"
@@ -39,7 +38,6 @@ javafx = { id = "org.openjfx.javafxplugin", version = "0.0.13" }
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-jb" }
-gradlePlugin-spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 gradlePlugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 gradlePlugin-versionsCheck = { module = "com.github.ben-manes:gradle-versions-plugin", version = "0.43.0" }
 gradlePlugin-gms = { module = "com.google.gms:google-services", version = "4.3.14" }

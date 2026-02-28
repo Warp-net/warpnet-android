@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     id("warpnet-android.versionsCheck")
 }
-
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
