@@ -1,0 +1,121 @@
+/*
+ *  Warpnet Android
+ *
+ *  Copyright (C) WarpnetProject and Contributors
+ *
+ *  This file is part of Warpnet Android.
+ *
+ *  Warpnet Android is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Warpnet Android is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.warpnet.warpnet-android.component.foundation
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.dp
+import com.warpnet.warpnet-android.extensions.withElevation
+import com.warpnet.warpnet-android.ui.mediumEmphasisContentContentColor
+
+@Composable
+fun IconTabsComponent(
+  items: List<Pair<Painter, String>>,
+  selectedItem: Int,
+  onItemSelected: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+  divider: @Composable () -> Unit = @Composable {
+    TabRowDefaults.Divider()
+  },
+) {
+  TabsComponent(
+    modifier = modifier,
+    count = items.count(),
+    selectedItem = selectedItem,
+    divider = divider,
+    onItemSelected = onItemSelected,
+  ) {
+    Box(
+      modifier = Modifier.padding(16.dp)
+    ) {
+      Icon(painter = items[it].first, contentDescription = items[it].second)
+    }
+  }
+}
+
+@Composable
+fun TextTabsComponent(
+  items: List<String>,
+  selectedItem: Int,
+  onItemSelected: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  TabsComponent(
+    modifier = modifier,
+    count = items.count(),
+    selectedItem = selectedItem,
+    onItemSelected = onItemSelected
+  ) {
+    Box(
+      modifier = Modifier.padding(16.dp)
+    ) {
+      Text(text = items[it])
+    }
+  }
+}
+
+@Composable
+fun TabsComponent(
+  count: Int,
+  selectedItem: Int,
+  onItemSelected: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+  divider: @Composable () -> Unit = @Composable {
+    TabRowDefaults.Divider()
+  },
+  tabContent: @Composable (Int) -> Unit,
+) {
+  TabRow(
+    modifier = modifier,
+    selectedTabIndex = selectedItem,
+    backgroundColor = MaterialTheme.colors.surface.withElevation(),
+    indicator = { tabPositions ->
+      TabRowDefaults.Indicator(
+        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedItem]),
+        color = MaterialTheme.colors.primary,
+      )
+    },
+    divider = divider
+  ) {
+    for (i in 0 until count) {
+      Tab(
+        selected = selectedItem == i,
+        onClick = {
+          onItemSelected(i)
+        },
+        selectedContentColor = MaterialTheme.colors.primary,
+        unselectedContentColor = mediumEmphasisContentContentColor,
+      ) {
+        tabContent.invoke(i)
+      }
+    }
+  }
+}

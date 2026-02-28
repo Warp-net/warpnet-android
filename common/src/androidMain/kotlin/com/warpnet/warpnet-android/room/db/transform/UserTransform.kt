@@ -1,0 +1,154 @@
+/*
+ *  Warpnet Android
+ *
+ *  Copyright (C) WarpnetProject and Contributors
+ *
+ *  This file is part of Warpnet Android.
+ *
+ *  Warpnet Android is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Warpnet Android is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.warpnet.warpnet-android.room.db.transform
+
+import com.warpnet.services.mastodon.model.Emoji
+import com.warpnet.warpnet-android.model.enums.PlatformType
+import com.warpnet.warpnet-android.model.ui.UiUrlEntity
+import com.warpnet.warpnet-android.model.ui.UiUser
+import com.warpnet.warpnet-android.model.ui.UserMetrics
+import com.warpnet.warpnet-android.model.ui.mastodon.Field
+import com.warpnet.warpnet-android.model.ui.mastodon.MastodonUserExtra
+import com.warpnet.warpnet-android.model.ui.warpnet.WarpnetUserExtra
+import com.warpnet.warpnet-android.room.db.model.DbMastodonUserExtra
+import com.warpnet.warpnet-android.room.db.model.DbWarpnetUserExtra
+import com.warpnet.warpnet-android.room.db.model.DbUser
+import com.warpnet.warpnet-android.room.db.model.WarpnetUrlEntity
+import com.warpnet.warpnet-android.utils.fromJson
+import com.warpnet.warpnet-android.utils.json
+import kotlinx.collections.immutable.toPersistentList
+import java.util.UUID
+
+internal fun DbUser.toUi() =
+  UiUser(
+    id = userId,
+    name = name,
+    screenName = screenName,
+    profileImage = profileImage,
+    profileBackgroundImage = profileBackgroundImage,
+    metrics = UserMetrics(
+      fans = followersCount,
+      follow = friendsCount,
+      listed = listedCount,
+      status = statusesCount,
+    ),
+    rawDesc = rawDesc,
+    htmlDesc = htmlDesc,
+    website = website,
+    location = location,
+    verified = verified,
+    protected = isProtected,
+    userKey = userKey,
+    platformType = platformType,
+    extra = try {
+      when (platformType) {
+        PlatformType.Warpnet -> extra.fromJson<DbWarpnetUserExtra>().toUi()
+        PlatformType.StatusNet -> TODO()
+        PlatformType.Fanfou -> TODO()
+        PlatformType.Mastodon -> extra.fromJson<DbMastodonUserExtra>().toUi()
+      }
+    } catch (e: Throwable) {
+      null
+    },
+    acct = acct,
+  )
+
+internal fun UiUser.toDbUser(dbId: String = UUID.randomUUID().toString()) =
+  DbUser(
+    _id = dbId,
+    name = name,
+    screenName = screenName,
+    profileImage = profileImage.toString(),
+    profileBackgroundImage = profileBackgroundImage,
+
+    rawDesc = rawDesc,
+    htmlDesc = htmlDesc,
+    website = website,
+    location = location,
+    verified = verified,
+    userKey = userKey,
+    platformType = platformType,
+    extra = when (extra) {
+      is WarpnetUserExtra -> DbWarpnetUserExtra(
+        pinned_tweet_id = extra.pinned_tweet_id,
+        url = extra.url.map {
+          WarpnetUrlEntity(
+            url = it.url,
+            expandedUrl = it.expandedUrl,
+            displayUrl = it.displayUrl
+          )
+        }
+      ).json()
+      is MastodonUserExtra -> DbMastodonUserExtra(
+        fields = extra.fields.map {
+          com.warpnet.services.mastodon.model.Field(
+            name = it.name,
+            value = it.value,
+          )
+        },
+        emoji = extra.emoji.map { it.emoji }.flatten().map {
+          Emoji(
+            shortcode = it.shortcode,
+            url = it.url,
+            staticURL = it.staticURL,
+            visibleInPicker = it.visibleInPicker,
+            category = it.category
+          )
+        },
+        bot = extra.bot,
+        locked = extra.locked
+      ).json()
+      else -> extra.json()
+    },
+    acct = acct,
+    userId = id,
+    followersCount = metrics.fans,
+    friendsCount = metrics.follow,
+    listedCount = metrics.listed,
+    isProtected = protected,
+    statusesCount = metrics.status
+  )
+
+internal fun DbWarpnetUserExtra.toUi() = WarpnetUserExtra(
+  pinned_tweet_id = pinned_tweet_id,
+  url = url.map { url ->
+    UiUrlEntity(
+      url = url.displayUrl,
+      expandedUrl = url.expandedUrl,
+      displayUrl = url.displayUrl,
+      title = null,
+      description = null,
+      image = null
+    )
+  }.toPersistentList()
+)
+
+internal fun DbMastodonUserExtra.toUi() = MastodonUserExtra(
+  emoji = emoji.toUi().toPersistentList(),
+  bot = bot,
+  locked = locked,
+  fields = fields.map { field ->
+    Field(
+      field.name,
+      field.value
+    )
+  }.toPersistentList()
+)

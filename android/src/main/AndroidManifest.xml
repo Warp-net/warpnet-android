@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.warpnet.warpnet-android">
+
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+        android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <application
+        android:name=".WarpnetApp"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="${appIcon}"
+        android:roundIcon="${appIconRound}"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WarpnetAndroid">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.warpnet.warpnet-android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filer_provider_path" />
+        </provider>
+
+        <activity
+            android:name="com.warpnet.warpnet-android.LauncherActivity"
+            android:exported="true"
+            android:icon="${appIcon}"
+            android:label="@string/app_name"
+            android:roundIcon="${appIconRound}"
+            android:theme="@style/Theme.WarpnetAndroid">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="true"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher"
+            android:icon="${appIcon}"
+            android:roundIcon="${appIconRound}"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher1"
+            android:icon="@mipmap/ic_launcher_1"
+            android:roundIcon="@mipmap/ic_launcher_1_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher2"
+            android:icon="@mipmap/ic_launcher_2"
+            android:roundIcon="@mipmap/ic_launcher_2_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher3"
+            android:icon="@mipmap/ic_launcher_3"
+            android:roundIcon="@mipmap/ic_launcher_3_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher4"
+            android:icon="@mipmap/ic_launcher_4"
+            android:roundIcon="@mipmap/ic_launcher_4_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher5"
+            android:icon="@mipmap/ic_launcher_5"
+            android:roundIcon="@mipmap/ic_launcher_5_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher6"
+            android:icon="@mipmap/ic_launcher_6"
+            android:roundIcon="@mipmap/ic_launcher_6_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher7"
+            android:icon="@mipmap/ic_launcher_7"
+            android:roundIcon="@mipmap/ic_launcher_7_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher8"
+            android:icon="@mipmap/ic_launcher_8"
+            android:roundIcon="@mipmap/ic_launcher_8_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher9"
+            android:icon="@mipmap/ic_launcher_9"
+            android:roundIcon="@mipmap/ic_launcher_9_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher10"
+            android:icon="@mipmap/ic_launcher_10"
+            android:roundIcon="@mipmap/ic_launcher_10_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher11"
+            android:icon="@mipmap/ic_launcher_11"
+            android:roundIcon="@mipmap/ic_launcher_11_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher12"
+            android:icon="@mipmap/ic_launcher_12"
+            android:roundIcon="@mipmap/ic_launcher_12_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+        <activity-alias
+            android:exported="true"
+            android:enabled="false"
+            android:launchMode="singleTop"
+            android:name="com.warpnet.warpnet-android.Launcher13"
+            android:icon="@mipmap/ic_launcher_13"
+            android:roundIcon="@mipmap/ic_launcher_13_round"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:targetActivity="com.warpnet.warpnet-android.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+
+        <activity
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:hardwareAccelerated="true"
+            android:name="com.warpnet.warpnet-android.WarpnetAndroidActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WarpnetAndroid"
+            android:icon="${appIcon}"
+            android:roundIcon="${appIconRound}"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
+
+            <intent-filter>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="warpnet.com" />
+                <data android:host="www.warpnet.com" />
+                <data android:host="mobile.warpnet.com" />
+
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="warpnet-android" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <service
+            android:name=".service.AccountAuthenticatorService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+    </application>
+
+</manifest>

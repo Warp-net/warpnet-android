@@ -1,0 +1,1026 @@
+{
+    "common": {
+        "alerts": {
+            "account_temporarily_locked": {
+                "title": "Account Temporarily Locked",
+                "message": "Open Warpnet to unlock"
+            },
+            "request_throttle": {
+                "title": "Request Throttle",
+                "message": "Operation too frequent. Please try again later"
+            },
+            "rate_limit_exceeded": {
+                "title": "Rate Limit Exceeded",
+                "message": "Reached Warpnet API usage limit"
+            },
+            "permission_denied_not_authorized": {
+                "title": "Permission Denied",
+                "message": "Sorry, you are not authorized"
+            },
+            "permission_denied_friendship_blocked": {
+                "title": "Permission Denied",
+                "message": "You have been blocked from following this account at the request of the user"
+            },
+            "account_suspended": {
+                "title": "Account Suspended",
+                "message": "Warpnet suspends accounts which violate the %s",
+                "warpnet_rules": "Warpnet Rules"
+            },
+            "no_tweets_found": {
+                "title": "No Tweets Found"
+            },
+            "unfollow_user": {
+                "message": "Unfollow user %s?"
+            },
+            "cancel_follow_request": {
+                "message": "Cancel follow request for %s?"
+            },
+            "tweet_sent": {
+                "title": "Tweet Sent"
+            },
+            "tweet_posted": {
+                "title": "Tweet Posted"
+            },
+            "toot_posted": {
+                "title": "Toot Posted"
+            },
+            "tweet_sending": {
+                "title": "Sending tweet"
+            },
+            "toot_sending": {
+                "title": "Sending toot"
+            },
+            "tweet_fail": {
+                "title": "Failed to Tweet",
+                "message": "Please try again",
+                "draft_saved_message": "Your tweet has been saved to Drafts."
+            },
+            "toot_fail": {
+                "title": "Failed to Toot",
+                "message": "Please try again",
+                "draft_saved_message": "Your toot has been saved to Drafts."
+            },
+            "post_fail_invalid_poll": {
+                "title": "Failed to Publish",
+                "message": "Poll has empty field. Please fulfill the field then try again"
+            },
+            "delete_tweet_confirm": {
+                "title": "Delete Tweet",
+                "message": "Do you want to delete this tweet?"
+            },
+            "tweet_deleted": {
+                "title": "Tweet Deleted"
+            },
+            "failed_to_delete_tweet": {
+                "title": "Failed to Delete Tweet",
+                "message": "Please try again"
+            },
+            "delete_toot_confirm": {
+                "title": "Delete Toot",
+                "message": "Do you want to delete this toot?"
+            },
+            "toot_deleted": {
+                "title": "Toot Deleted"
+            },
+            "failed_to_delete_toot": {
+                "title": "Failed to Delete Toot",
+                "message": "Please try again"
+            },
+            "media_saving": {
+                "title": "Saving media"
+            },
+            "media_saved": {
+                "title": "Media saved"
+            },
+            "media_save_fail": {
+                "title": "Failed to save media",
+                "message": "Please try again"
+            },
+            "media_sharing": {
+                "title": "Media will be shared after download is completed"
+            },
+            "photo_saved": {
+                "title": "Photo Saved"
+            },
+            "photo_save_fail": {
+                "title": "Failed to Save Photo",
+                "message": "Please try again"
+            },
+            "photo_copied": {
+                "title": "Photo Copied"
+            },
+            "photo_copy_fail": {
+                "title": "Failed to Copy Photo",
+                "message": "Please try again"
+            },
+            "failed_to_load": {
+                "title": "Failed to Load",
+                "message": "Please try again"
+            },
+            "failed_to_following": {
+                "title": "Failed to Following",
+                "message": "Please try again"
+            },
+            "failed_to_unfollowing": {
+                "title": "Failed to Unfollowing",
+                "message": "Please try again"
+            },
+            "following_success": {
+                "title": "Following Succeeded"
+            },
+            "unfollowing_success": {
+                "title": "Unfollowing Succeeded"
+            },
+            "following_request_sent": {
+                "title": "Following Request Sent"
+            },
+            "too_many_requests": {
+                "title": "Too Many Requests"
+            },
+            "sign_out_user_confirm": {
+                "title": "Sign out",
+                "message": "Do you want to sign out?"
+            },
+            "mute_user_confirm": {
+                "title": "Do you want to mute %s?"
+            },
+            "mute_user_success": {
+                "title": "%s has been muted"
+            },
+            "failed_to_mute_user": {
+                "title": "Failed to mute %s",
+                "message": "Please try again"
+            },
+            "unmute_user_confirm": {
+                "title": "Do you want to unmute %s?"
+            },
+            "unmute_user_success": {
+                "title": "%s has been unmuted"
+            },
+            "failed_to_unmute_user": {
+                "title": "Failed to unmute %s",
+                "message": "Please try again"
+            },
+            "block_user_success": {
+                "title": "%s has been blocked"
+            },
+            "block_user_confirm": {
+                "title": "Do you want to block %s?"
+            },
+            "failed_to_block_user": {
+                "title": "Failed to block %s",
+                "message": "Please try again"
+            },
+            "unblock_user_confirm": {
+                "title": "Do you want to unblock %s?"
+            },
+            "unblock_user_success": {
+                "title": "%s has been unblocked"
+            },
+            "failed_to_unblock_user": {
+                "title": "Failed to unblock %s",
+                "message": "Please try again"
+            },
+            "report_user_success": {
+                "title": "%s has been reported for spam"
+            },
+            "failed_to_report_user": {
+                "title": "Failed to report %s",
+                "message": "Please try again"
+            },
+            "report_and_block_user_success": {
+                "title": "%s has been reported for spam and blocked"
+            },
+            "failed_to_report_and_block_user": {
+                "title": "Failed to report and block %s",
+                "message": "Please try again"
+            },
+            "failed_to_login_mastodon_server": {
+                "title": "Failed to Login",
+                "message": "Server URL is incorrect."
+            },
+            "failed_to_login_timeout": {
+                "title": "Failed to Login",
+                "message": "Connection timeout."
+            },
+            "failed_to_send_message": {
+                "title": "Sending message",
+                "message": "Failed to send message"
+            },
+            "list_deleted": {
+                "title": "List Deleted",
+                "message": "Please try again"
+            },
+            "failed_to_delete_list": {
+                "title": "Failed to Delete List",
+                "message": "Please try again"
+            },
+            "list_member_removed": {
+                "title": "List Member Removed"
+            },
+            "failed_to_remove_list_member": {
+                "title": "Failed to Remove List Member",
+                "message": "Please try again"
+            },
+            "failed_to_add_list_member": {
+                "title": "Failed to Add List Member",
+                "message": "Please try again"
+            }
+        },
+        "notification": {
+            "own_poll": "Your poll has ended",
+            "poll": "A poll you have voted in has ended",
+            "reblog": "%s boosted your toot",
+            "status": "%s just posted",
+            "follow_request": "%s has requested to follow you",
+            "follow_request_action": {
+                "approve": "Approve",
+                "deny": "Deny"
+            },
+            "follow_request_response": {
+                "follow_request_approved": "Follow Request Approved",
+                "follow_request_denied": "Follow Request Denied"
+            },
+            "favourite": "%s favourited your toot",
+            "follow": "%s followed you",
+            "mentions": "%s mentions you",
+            "messages": {
+                "title": "New direct message",
+                "content": "%s sent you a message"
+            }
+        },
+        "controls": {
+            "actions": {
+                "add": "Add",
+                "clear": "Clear",
+                "remove": "Remove",
+                "delete": "Delete",
+                "done": "Done",
+                "edit": "Edit",
+                "save": "Save",
+                "copy": "Copy",
+                "ok": "OK",
+                "confirm": "Confirm",
+                "yes": "Yes",
+                "cancel": "Cancel",
+                "take_photo": "Take photo",
+                "save_photo": "Save photo",
+                "browse": "Browse",
+                "sign_in": "Sign in",
+                "sign_out": "Sign out",
+                "preview": "Preview",
+                "open_in_safari": "Open in Safari",
+                "share": "Share",
+                "share_media": "Share media",
+                "share_link": "Share link",
+                "share_media_menu": {
+                    "link": "Link",
+                    "media": "Media"
+                }
+            },
+            "timeline": {
+                "load_more": "Load More"
+            },
+            "status": {
+                "actions": {
+                    "reply": "Reply",
+                    "quote": "Quote",
+                    "retweet": "Retweet",
+                    "undo_retweet": "Undo Retweet",
+                    "boost": "Boost",
+                    "undo_boost": "Undo Boost",
+                    "repost": "Repost",
+                    "undo_repost": "Undo Repost",
+                    "like": "Like",
+                    "copy_text": "Copy text",
+                    "copy_link": "Copy link",
+                    "share_link": "Share link",
+                    "share_content": "Share content",
+                    "save_media": "Save media",
+                    "delete_tweet": "Delete tweet",
+                    "vote": "Vote",
+                    "share": "Share",
+                    "bookmark": "Bookmark",
+                    "translate": "Translate",
+                    "pin_on_profile": "Pin on Profile",
+                    "unpin_from_profile": "Unpin from Profile"
+                },
+                "media": "Media",
+                "user_retweeted": "%s retweeted",
+                "you_retweeted": "You retweeted",
+                "user_boosted": "%s boosted",
+                "you_boosted": "You boosted",
+                "poll": {
+                    "expired": "Closed",
+                    "total_person": "%s person",
+                    "total_vote": "%s vote",
+                    "total_people": "%s people",
+                    "total_votes": "%s votes"
+                },
+                "thread": {
+                    "show": "Show this thread"
+                },
+                "reply_settings": {
+                    "people_user_mentioned_can_reply": "People %s mentioned can reply.",
+                    "people_user_follows_or_mentioned_can_reply": "People %s follows or mentioned can reply."
+                }
+            },
+            "user": {
+                "actions": {
+                    "view_lists": "View Lists",
+                    "view_listed": "View Listed",
+                    "add_remove_from_lists": "Add/remove from Lists"
+                }
+            },
+            "friendship": {
+                "actions": {
+                    "follow": "Follow",
+                    "unfollow": "Unfollow",
+                    "following": "Following",
+                    "request": "Request",
+                    "pending": "Pending",
+                    "mute": "Mute",
+                    "unmute": "Unmute",
+                    "block": "Block",
+                    "unblock": "Unblock",
+                    "blocked": "Blocked",
+                    "report": "Report",
+                    "report_and_block": "Report and Block"
+                },
+                "follower": "follower",
+                "followers": "followers",
+                "follows_you": "Follows you",
+                "user_is_not_following_you": "%s is not following you",
+                "user_is_following_you": "%s is following you",
+                "mute_user": "Mute %s",
+                "block_user": "Block %s",
+                "do_you_want_to_report_user": "Do you want to report %s",
+                "do_you_want_to_report_and_block_user": "Do you want to report and block %s"
+            },
+            "profile_dashboard": {
+                "following": "Following",
+                "followers": "Followers",
+                "listed": "Listed"
+            },
+            "list": {
+                "no_results": "No results"
+            },
+            "empty_state": {
+                "no_results": "No results",
+                "unable_to_access": "Unable to access"
+            },
+            "ios": {
+                "photo_library": "Photo Library"
+            }
+        },
+        "countable": {
+            "reply": {
+                "single": "%s reply",
+                "mutiple": "%s replies"
+            },
+            "quote": {
+                "single": "%s quote",
+                "mutiple": "%s quotes"
+            },
+            "retweet": {
+                "single": "%s retweet",
+                "mutiple": "%s retweets"
+            },
+            "like": {
+                "single": "%s like",
+                "multiple": "%s likes"
+            },
+            "member": {
+                "single": "%s member",
+                "multiple": "%s members"
+            },
+            "list": {
+                "single": "%s list",
+                "multiple": "%s lists"
+            },
+            "tweet": {
+                "single": "%s tweet",
+                "multiple": "%s tweets"
+            },
+            "photo": {
+                "single": "%s photo",
+                "multiple": "%s photos"
+            }
+        },
+        "notification_channel": {
+            "background_progresses": {
+                "name": "Background progresses"
+            },
+            "content_interactions": {
+                "name": "Interactions",
+                "description": "Interactions like mentions and retweets"
+            },
+            "content_messages": {
+                "name": "Messages",
+                "description": "Direct messages"
+            }
+        }
+    },
+    "scene": {
+        "drawer": {
+            "sign_in": "Sign in",
+            "manage_accounts": "Manage accounts"
+        },
+        "manage_accounts": {
+            "title": "Accounts",
+            "delete_account": "Delete account",
+            "open_in_new_window": "Open in new window"
+        },
+        "sign_in": {
+            "hello_sign_in_to_get_started": "Hello!\nSign in to Get Started.",
+            "sign_in_with_warpnet": "Sign in with Warpnet",
+            "sign_in_with_mastodon": "Sign in with Mastodon",
+            "warpnet_options": {
+                "sign_in_with_custom_warpnet_key": "Sign in with Custom Warpnet Key",
+                "warpnet_api_v2_access_is_required": "Warpnet API v2 access is required."
+            }
+        },
+        "authentication": {
+            "title": "Authentication"
+        },
+        "timeline": {
+            "title": "Timeline"
+        },
+        "federated": {
+            "title": "Federated"
+        },
+        "local": {
+            "title": "Local"
+        },
+        "detail": {
+            "title": "Detail"
+        },
+        "mentions": {
+            "title": "Mentions"
+        },
+        "notification": {
+            "title": "Notification",
+            "tabs": {
+                "all": "All",
+                "mentions": "Mentions"
+            }
+        },
+        "messages": {
+            "title": "Messages",
+            "expanded": {
+                "photo": "[Photo]"
+            },
+            "action": {
+                "copy_text": "Copy message text",
+                "delete": "Delete message for you"
+            },
+            "new_conversation": {
+                "title": "Find people",
+                "search": "Search people"
+            },
+            "icon": {
+                "failed": "Send message failed"
+            },
+            "error": {
+                "not_supported": "The Current account does not support direct messages"
+            }
+        },
+        "likes": {
+            "title": "Likes"
+        },
+        "bookmark": {
+            "title": "Bookmark"
+        },
+        "trends": {
+            "title": "Trends",
+            "world_wide": "Trends - Worldwide",
+            "world_wide_without_prefix": "Worldwide",
+            "now": "Trending Now",
+            "accounts": "%d people talking",
+            "trends_location": "Trends Location"
+        },
+        "status": {
+            "title": "Tweet",
+            "title_mastodon": "Toot",
+            "reply": {
+                "single": "1 Reply",
+                "mutiple": "%d Replies"
+            },
+            "quote": {
+                "single": "1 Quote",
+                "mutiple": "%d Quotes"
+            },
+            "retweet": {
+                "single": "1 Retweet",
+                "mutiple": "%d Retweets"
+            },
+            "like": {
+                "single": "1 Like",
+                "multiple": "%d Likes"
+            }
+        },
+        "search": {
+            "title": "Search",
+            "search_bar": {
+                "placeholder": "Search tweets or users"
+            },
+            "saved_search": "Saved Search",
+            "tabs": {
+                "tweets": "Tweets",
+                "toots": "Toots",
+                "media": "Media",
+                "users": "Users",
+                "people": "People",
+                "hashtag": "Hashtag"
+            },
+            "show_more": "Show more",
+            "show_less": "Show less"
+        },
+        "profile": {
+            "title": "Me",
+            "hide_reply": "Hide reply",
+            "permission_denied_profile_blocked": {
+                "title": "Permission Denied",
+                "message": "You have been blocked from viewing this user’s profile."
+            },
+            "filter": {
+                "all": "All tweets",
+                "exclude_replies": "Exclude replies"
+            },
+            "fields": {
+                "joined_in_date": "Joined in %s"
+            }
+        },
+        "following": {
+            "title": "Following"
+        },
+        "followers": {
+            "title": "Followers"
+        },
+        "listed": {
+            "title": "Listed"
+        },
+        "compose": {
+            "title": {
+                "compose": "Compose",
+                "reply": "Reply",
+                "quote": "Quote"
+            },
+            "reply_to": "Reply to …",
+            "and": ", ",
+            "last_end": " and ",
+            "placeholder": "What’s happening?",
+            "cw_placeholder": "Write your warning here",
+            "others_in_this_conversation": "Others in this conversation:",
+            "save_draft": {
+                "message": "Save draft?",
+                "action": "Save draft"
+            },
+            "replying_to": "Replying to",
+            "vote": {
+                "multiple": "Multiple choice",
+                "expiration": {
+                    "5_Min": "5 minutes",
+                    "30_Min": "30 minutes",
+                    "1_Hour": "1 hour",
+                    "6_Hour": "6 hours",
+                    "1_Day": "1 day",
+                    "3_Day": "3 days",
+                    "7_Day": "7 days"
+                },
+                "placeholder_index": "Choice %d"
+            },
+            "reply_settings": {
+                "everyone_can_reply": "Everyone can reply",
+                "people_you_follow_can_reply": "People you follow can reply",
+                "only_people_you_mention_can_reply": "Only people you mention can reply"
+            },
+            "visibility": {
+                "public": "Public",
+                "unlisted": "Unlisted",
+                "private": "Private",
+                "direct": "Direct"
+            },
+            "visibility_description": {
+                "public": "Visible for all, shown in public timelines",
+                "unlisted": "Visible for all, but not in public timelines",
+                "private": "Visible for followers only",
+                "direct": "Visible for mentioned users only"
+            },
+            "media": {
+                "preview": "Preview",
+                "caption": {
+                    "add": "Add Caption",
+                    "update": "Update Caption",
+                    "remove": "Remove Caption",
+                    "add_a_description_for_this_image": "Add a description for this image"
+                },
+                "remove": "Remove"
+            }
+        },
+        "compose_user_search": {
+            "search_placeholder": "Search users"
+        },
+        "compose_hashtag_search": {
+            "search_placeholder": "Search hashtag"
+        },
+        "drafts": {
+            "title": "Drafts",
+            "actions": {
+                "delete_draft": "Delete draft",
+                "edit_draft": "Edit draft"
+            }
+        },
+        "history": {
+            "title": "History",
+            "scope": {
+                "tweet": "Tweet",
+                "toot": "Toot",
+                "user": "User"
+            },
+            "clear": "Clear"
+        },
+        "lists": {
+            "title": "Lists",
+            "tabs": {
+                "created": "MY LISTS",
+                "subscribed": "SUBSCRIBED"
+            },
+            "icons": {
+                "private": "Private visibility",
+                "create": "Create list"
+            }
+        },
+        "lists_details": {
+            "title": "Lists Details",
+            "descriptions": {
+                "single_member": "1 Member",
+                "multiple_members": "%d Members",
+                "single_subscriber": "1 Subscriber",
+                "multiple_subscribers": "%d Subscribers"
+            },
+            "menu_actions": {
+                "add_member": "Add Member",
+                "edit_list": "Edit List",
+                "rename_list": "Rename List",
+                "delete_list": "Delete List",
+                "follow": "Follow",
+                "unfollow": "Unfollow"
+            },
+            "tabs": {
+                "members": "List Members",
+                "subscriber": "Subscribers"
+            },
+            "delete_list_confirm": "Delete this list: %s",
+            "no_members_found": "No Members Found.",
+            "add_members": "Add Members",
+            "delete_list_title": "Delete this list"
+        },
+        "lists_modify": {
+            "create": {
+                "title": "New List"
+            },
+            "edit": {
+                "title": "Edit List"
+            },
+            "name": "Name",
+            "description": "Description",
+            "private": "Private",
+            "dialog": {
+                "create": "Create a list",
+                "edit": "Rename the list"
+            }
+        },
+        "lists_users": {
+            "menu_actions": {
+                "add": "Add",
+                "remove": "Remove"
+            },
+            "add": {
+                "title": "Add Member",
+                "search": "Search people",
+                "search_within_people_you_follow": "Search within people you follow"
+            }
+        },
+        "settings": {
+            "title": "Settings",
+            "section_header": {
+                "account": "Account",
+                "general": "General",
+                "about": "About"
+            },
+            "account": {
+                "title": "Account",
+                "mute_and_block": "Mute and Block",
+                "muted_people": "Muted People",
+                "blocked_people": "Blocked People"
+            },
+            "privacy_and_safety": {
+                "title": "Privacy and safety",
+                "section_header": {
+                    "mute_and_block": "Mute and Block",
+                    "sensitive": "Sensitive Info"
+                },
+                "always_show_sensitive_media": "Always show sensitive media"
+            },
+            "appearance": {
+                "title": "Appearance",
+                "highlight_color": "Highlight color",
+                "pick_color": "Pick color",
+                "app_icon": "App Icon",
+                "section_header": {
+                    "tab_position": "Tab Position",
+                    "theme": "Theme",
+                    "scrolling_timeline": "Scrolling Timeline",
+                    "translation": "Translation"
+                },
+                "tab_position": {
+                    "top": "Top",
+                    "bottom": "Bottom"
+                },
+                "theme": {
+                    "auto": "Auto",
+                    "light": "Light",
+                    "dark": "Dark"
+                },
+                "AMOLED_optimized_mode": "AMOLED optimized mode",
+                "scrolling_timeline": {
+                    "tab_bar": "Hide tab bar when scrolling",
+                    "app_bar": "Hide app bar when scrolling",
+                    "fab": "Hide FAB when scrolling"
+                },
+                "translation": {
+                    "translate_button": "Translate button",
+                    "service": "Service",
+                    "auto": "Auto",
+                    "always": "Always",
+                    "off": "Off"
+                }
+            },
+            "behaviors": {
+                "title": "Behaviors",
+                "tab_bar_section": {
+                    "tab_bar": "Tab Bar",
+                    "show_tab_bar_labels": "Show tab bar labels",
+                    "tap_tab_bar_scroll_to_top": "Tap tab bar scroll to top"
+                },
+                "timeline_refreshing_section": {
+                    "timeline_refreshing": "Timeline Refreshing",
+                    "automatically_refresh_timeline": "Automatically refresh timeline",
+                    "refresh_interval": "Refresh interval",
+                    "refresh_interval_option": {
+                        "30_seconds": "30 seconds",
+                        "60_seconds": "60 seconds",
+                        "120_seconds": "120 seconds",
+                        "300_seconds": "300 seconds"
+                    },
+                    "reset_to_top": "Reset to top",
+                    "reset_to_top_option": {
+                        "single_tap": "Single Tap",
+                        "double_tap": "Double Tap"
+                    }
+                },
+                "history_section": {
+                    "history": "History",
+                    "enable_history_record": "Enable History Record"
+                }
+            },
+            "display": {
+                "title": "Display",
+                "section_header": {
+                    "preview": "Preview",
+                    "text": "Text",
+                    "avatar": "Avatar",
+                    "date_format": "Date Format",
+                    "media": "Media"
+                },
+                "preview": {
+                    "thank_for_using_warpnet_x": "Thanks for using @WarpnetProject!"
+                },
+                "text": {
+                    "use_the_system_font_size": "Use the system font size",
+                    "avatar_style": "Avatar Style",
+                    "circle": "Circle",
+                    "rounded_square": "Rounded Square"
+                },
+                "date_format": {
+                    "relative": "Relative",
+                    "absolute": "Absolute"
+                },
+                "media": {
+                    "media_previews": "Media previews",
+                    "auto_playback": "Auto playback",
+                    "automatic": "Automatic",
+                    "always": "Always",
+                    "off": "Off",
+                    "mute_by_default": "Mute by default"
+                },
+                "url_preview": "Url previews"
+            },
+            "layout": {
+                "title": "Layout",
+                "desc": {
+                    "title": "Custom Layout",
+                    "content": "Choose and arrange up to 5 actions that will appear on the tabbar (The local and federal timelines will only be displayed in Mastodon.)"
+                },
+                "actions": {
+                    "tabbar": "Tabbar actions",
+                    "drawer": "Drawer actions"
+                }
+            },
+            "notification": {
+                "title": "Notification",
+                "notification_switch": "Show Notification",
+                "accounts": "Accounts",
+                "push_notification": "Push Notification",
+                "mastodon": {
+                    "new_follow": "New Follow",
+                    "reblog": "Reblog",
+                    "Favorite": "Favorite",
+                    "poll": "poll",
+                    "mention": "Mention"
+                }
+            },
+            "storage": {
+                "title": "Storage",
+                "search": {
+                    "title": "Clear search history"
+                },
+                "media": {
+                    "title": "Clear media cache",
+                    "sub_title": "Clear stored media cache."
+                },
+                "all": {
+                    "title": "Clear all cache",
+                    "sub_title": "Delete all Warpnet Android cache. Your account credentials will not be lost."
+                }
+            },
+            "misc": {
+                "title": "Misc",
+                "nitter": {
+                    "title": "Third-party Warpnet data provider",
+                    "input": {
+                        "placeholder": "Nitter Instance",
+                        "description": "Alternative Warpnet front-end focused on privacy.",
+                        "value": "Instance URL",
+                        "invalid": "Nitter instance URL is invalid, e.g. https://nitter.net"
+                    },
+                    "dialog": {
+                        "information": {
+                            "title": "Third party Warpnet data provider",
+                            "content": "Due to the limitation of Warpnet API, some data might not be able to fetch from Warpnet, you can use a third-party data provider to provide these data. Warpnet does not take any responsibility for them."
+                        },
+                        "usage": {
+                            "title": "Using Third-party data provider in",
+                            "content": "- Warpnet status threading",
+                            "project_button": "Project URL"
+                        }
+                    }
+                },
+                "proxy": {
+                    "title": "Proxy settings",
+                    "enable": {
+                        "title": "Proxy",
+                        "description": "Use proxy for all network requests"
+                    },
+                    "type": {
+                        "title": "Proxy type",
+                        "http": "HTTP",
+                        "socks": "SOCKS",
+                        "reverse": "Reverse"
+                    },
+                    "server": "Server",
+                    "port": {
+                        "title": "Port",
+                        "error": "Proxy server port must be numbers"
+                    },
+                    "username": "Username",
+                    "password": "Password"
+                }
+            },
+            "about": {
+                "title": "About",
+                "license": "License",
+                "description": "Next generation of Warpnet for Android 5.0+. \nStill in early stage.",
+                "version": "Ver %s",
+                "logo": {
+                    "background": "About page background logo",
+                    "background_shadow": "About page background logo shadow"
+                }
+            }
+        },
+        "column": {
+            "title": "New Column",
+            "actions": {
+                "close_column": "Close column",
+                "move_left": "Move left",
+                "move_right": "Move right",
+                "open_in_new_column": "Open in new column"
+            }
+        }
+    },
+    "accessibility": {
+        "common": {
+            "network_image": "Network Image",
+            "back": "Back",
+            "more": "More",
+            "close": "Close",
+            "done": "Done",
+            "logo": {
+                "warpnet": "Warpnet Android logo",
+                "warpnet": "Warpnet Logo",
+                "mastodon": "Mastodon Logo",
+                "github": "Github Logo",
+                "telegram": "Telegram Logo"
+            },
+            "video": {
+                "play": "Play video"
+            },
+            "status": {
+                "location": "Location",
+                "retweeted": "Retweeted",
+                "boosted": "Boosted",
+                "liked": "Liked",
+                "media": "Media",
+                "author_avatar": "Author avatar",
+                "content_warning": "Content Warning",
+                "poll_option_ordinal_prefix": "Poll option",
+                "actions": {
+                    "reply": "Reply",
+                    "retweet": "Retweet",
+                    "like": "Like",
+                    "menu": "Menu",
+                    "reveal_content": "Reveal content",
+                    "hide_content": "Hide content",
+                    "reveal_media": "Reveal media",
+                    "hide_media": "Hide media"
+                }
+            }
+        },
+        "scene": {
+            "sign_in": {
+                "warpnet_client_authentication_key_setting": "Warpnet client authentication key setting",
+                "please_enter_mastodon_domain_to_sign_in": "Please enter Mastodon domain to sign-in"
+            },
+            "home": {
+                "compose": "Compose",
+                "menu": "Menu",
+                "drawer": {
+                    "account_dropdown": "Account DropDown"
+                }
+            },
+            "search": {
+                "history": "History",
+                "save": "Save"
+            },
+            "timeline": {
+                "load_gap": "Load"
+            },
+            "user": {
+                "website": "Website",
+                "location": "Location",
+                "tab": {
+                    "status": "Statuses",
+                    "media": "Media",
+                    "favourite": "Favourite"
+                }
+            },
+            "compose": {
+                "send": "Send",
+                "location": {
+                    "enable": "Enable location",
+                    "disable": "Disable location"
+                },
+                "add_mention": "Add mention",
+                "image": "Add image",
+                "draft": "Open draft",
+                "thread": "Thread mode",
+                "media_insert": {
+                    "camera": "Take Photo",
+                    "record_video": "Record Video",
+                    "library": "Browse Library",
+                    "gif": "Add GIF"
+                }
+            },
+            "gif": {
+                "title": "GIPHY",
+                "search": "Search GIF"
+            },
+            "manage_accounts": {
+                "add": "Add",
+                "current_sign_in_user": "Current sign-in user: %s"
+            },
+            "settings": {
+                "display": {
+                    "font_size": "Font Size"
+                }
+            }
+        },
+        "voice_over": {
+            "selected": "Selected",
+            "double_tap_and_hold_to_display_menu": "Double tap and hold to display menu",
+            "double_tap_to_open_profile": "Double tap to open profile",
+            "double_tap_and_hold_to_open_the_accounts_panel": "Double tap and hold to open the accounts panel"
+        }
+    }
+}

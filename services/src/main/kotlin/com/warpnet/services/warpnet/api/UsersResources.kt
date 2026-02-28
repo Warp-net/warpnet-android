@@ -1,0 +1,64 @@
+/*
+ *  Warpnet Android
+ *
+ *  Copyright (C) WarpnetProject and Contributors
+ *
+ *  This file is part of Warpnet Android.
+ *
+ *  Warpnet Android is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Warpnet Android is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.warpnet.services.warpnet.api
+
+import com.warpnet.services.warpnet.model.BlockV2
+import com.warpnet.services.warpnet.model.BlockV2Request
+import com.warpnet.services.warpnet.model.ProfileBanner
+import com.warpnet.services.warpnet.model.RelationshipResponse
+import com.warpnet.services.warpnet.model.WarpnetResponseV2
+import com.warpnet.services.warpnet.model.User
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface UsersResources {
+  @GET("/1.1/account/verify_credentials.json")
+  suspend fun verifyCredentials(): User?
+
+  @GET("/1.1/users/profile_banner.json")
+  suspend fun profileBanners(@Query("screen_name") screenName: String): ProfileBanner
+
+  @GET("/1.1/friendships/show.json")
+  suspend fun showFriendships(@Query("target_id") target_id: String): RelationshipResponse
+
+  @POST("/2/users/{sourceId}/blocking")
+  suspend fun block(
+    @Path(value = "sourceId") sourceId: String,
+    @Body target: BlockV2Request
+  ): WarpnetResponseV2<BlockV2>
+
+  @DELETE("/2/users/{sourceId}/blocking/{targetId}")
+  suspend fun unblock(
+    @Path(value = "sourceId") sourceId: String,
+    @Path(value = "targetId") targetId: String,
+  ): WarpnetResponseV2<BlockV2>
+
+  @POST("/1.1/users/report_spam.json")
+  suspend fun reportSpam(
+    @Query("screen_name") screenName: String?,
+    @Query("user_id") userId: String,
+    @Query("perform_block") performBlock: Boolean = false,
+  )
+}
