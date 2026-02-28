@@ -13,23 +13,8 @@ dependencies {
     implementation(fileTree("libs") { include("*.jar") })
 }
 
-// Wrap task registration in afterEvaluate to ensure configurations are available
-afterEvaluate {
-    tasks.register<Copy>("vendorDependencies") {
-        // For KMP projects, we target the Android runtime configuration
-        val runtimeDeps = configurations.findByName("releaseRuntimeClasspath") 
-            ?: configurations.findByName("debugRuntimeClasspath")
-            ?: configurations.findByName("jvmRuntimeClasspath")
-        
-        if (runtimeDeps != null) {
-            from(runtimeDeps)
-            into(rootProject.layout.projectDirectory.dir("repo"))
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        } else {
-            logger.warn("No runtime configuration found for vendoring in services module")
-        }
-    }
-}
+// Register vendorDependencies task using shared utility function
+registerVendorDependenciesTask("services")
 kotlin {
     sourceSets {
         val commonMain by getting {

@@ -5,22 +5,8 @@ dependencies {
     implementation(fileTree("libs") { include("*.jar") })
 }
 
-// Wrap task registration in afterEvaluate to ensure configurations are available
-afterEvaluate {
-    tasks.register<Copy>("vendorDependencies") {
-        // For Android projects, use the release runtime configuration
-        val runtimeDeps = configurations.findByName("releaseRuntimeClasspath") 
-            ?: configurations.findByName("debugRuntimeClasspath")
-        
-        if (runtimeDeps != null) {
-            from(runtimeDeps)
-            into(rootProject.layout.projectDirectory.dir("repo"))
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        } else {
-            logger.warn("No runtime configuration found for vendoring in android module")
-        }
-    }
-}
+// Register vendorDependencies task using shared utility function
+registerVendorDependenciesTask("android")
 buildscript {
     repositories {
         google()
