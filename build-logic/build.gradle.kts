@@ -15,6 +15,9 @@ dependencies {
 
     implementation(libs.gradlePlugin.detekt)
     implementation(libs.gradlePlugin.versionsCheck)
+    
+    // JSON library for build scripts (removed from Gradle API in 9.0)
+    implementation("org.json:json:20240303")
 }
 
 gradlePlugin {
