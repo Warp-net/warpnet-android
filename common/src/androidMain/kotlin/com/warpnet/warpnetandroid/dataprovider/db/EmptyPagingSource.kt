@@ -18,24 +18,23 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.dataprovider
+package com.warpnet.warpnetandroid.dataprovider.db
 
-import android.content.Context
-import com.warpnet.warpnetandroid.dataprovider.db.AppDatabaseImpl
-import com.warpnet.warpnetandroid.dataprovider.db.CacheDatabaseImpl
-import com.warpnet.warpnetandroid.db.AppDatabase
-import com.warpnet.warpnetandroid.db.CacheDatabase
-import com.warpnet.warpnetandroid.di.ext.get
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 
-actual class DataProvider private constructor(context: Context) {
-  // data provide functions....
-  actual companion object Factory {
-    actual fun create(): DataProvider {
-      return DataProvider(get())
-    }
+/**
+ * Empty in-memory PagingSource that returns no data.
+ * Used to replace database-backed PagingSources in a stateless app.
+ */
+internal class EmptyPagingSource<T : Any> : PagingSource<Int, T>() {
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
+    return LoadResult.Page(
+      data = emptyList(),
+      prevKey = null,
+      nextKey = null
+    )
   }
 
-  actual val appDatabase: AppDatabase = AppDatabaseImpl()
-
-  actual val cacheDatabase: CacheDatabase = CacheDatabaseImpl()
+  override fun getRefreshKey(state: PagingState<Int, T>): Int? = null
 }

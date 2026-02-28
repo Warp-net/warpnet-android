@@ -18,24 +18,29 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.dataprovider
+package com.warpnet.warpnetandroid.dataprovider.db
 
-import android.content.Context
-import com.warpnet.warpnetandroid.dataprovider.db.AppDatabaseImpl
-import com.warpnet.warpnetandroid.dataprovider.db.CacheDatabaseImpl
 import com.warpnet.warpnetandroid.db.AppDatabase
-import com.warpnet.warpnetandroid.db.CacheDatabase
-import com.warpnet.warpnetandroid.di.ext.get
+import com.warpnet.warpnetandroid.db.dao.DraftDao
+import com.warpnet.warpnetandroid.db.dao.SearchDao
 
-actual class DataProvider private constructor(context: Context) {
-  // data provide functions....
-  actual companion object Factory {
-    actual fun create(): DataProvider {
-      return DataProvider(get())
-    }
+/**
+ * In-memory implementation of AppDatabase that doesn't persist data.
+ */
+internal class AppDatabaseImpl : AppDatabase {
+  private val draftDao = object : DraftDao {}
+  private val searchDao = object : SearchDao {}
+
+  override fun draftDao(): DraftDao = draftDao
+
+  override fun searchDao(): SearchDao = searchDao
+
+  override suspend fun clearAllTables() {
+    // No-op for in-memory implementation
   }
 
-  actual val appDatabase: AppDatabase = AppDatabaseImpl()
-
-  actual val cacheDatabase: CacheDatabase = CacheDatabaseImpl()
+  override suspend fun <R> withTransaction(block: suspend () -> R): R {
+    // Execute block directly without transaction support
+    return block()
+  }
 }

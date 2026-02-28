@@ -18,24 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.dataprovider
+package com.warpnet.warpnetandroid.db.dao
 
-import android.content.Context
-import com.warpnet.warpnetandroid.dataprovider.db.AppDatabaseImpl
-import com.warpnet.warpnetandroid.dataprovider.db.CacheDatabaseImpl
-import com.warpnet.warpnetandroid.db.AppDatabase
-import com.warpnet.warpnetandroid.db.CacheDatabase
-import com.warpnet.warpnetandroid.di.ext.get
+import androidx.paging.PagingSource
+import com.warpnet.warpnetandroid.model.MicroBlogKey
+import com.warpnet.warpnetandroid.model.paging.PagingTimeLineWithStatus
+import com.warpnet.warpnetandroid.model.paging.PagingTimeLine
 
-actual class DataProvider private constructor(context: Context) {
-  // data provide functions....
-  actual companion object Factory {
-    actual fun create(): DataProvider {
-      return DataProvider(get())
-    }
-  }
-
-  actual val appDatabase: AppDatabase = AppDatabaseImpl()
-
-  actual val cacheDatabase: CacheDatabase = CacheDatabaseImpl()
+interface PagingTimelineDao {
+  suspend fun insertAll(items: List<PagingTimeLine>)
+  fun findWithStatusKey(statusKey: MicroBlogKey, accountKey: MicroBlogKey): PagingTimeLineWithStatus?
+  suspend fun clearAll(pagingKey: String, accountKey: MicroBlogKey)
+  fun getPagingSource(pagingKey: String, accountKey: MicroBlogKey): PagingSource<Int, PagingTimeLineWithStatus>
+  fun getLatest(pagingKey: String, accountKey: MicroBlogKey): PagingTimeLineWithStatus?
 }
