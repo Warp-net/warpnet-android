@@ -11,8 +11,8 @@
         tools:targetApi="n_mr1">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.warpnet.warpnet-android"
-            android:targetClass="com.warpnet.warpnet-android.WarpnetAndroidActivity"
+            android:targetPackage="com.warpnet.warpnetandroid"
+            android:targetClass="com.warpnet.warpnetandroid.WarpnetAndroidActivity"
             android:data="warpnet-android://RootDeepLinks/Compose"/>
         <categories android:name="android.shortcut.conversation" />
         <capability-binding android:key="actions.intent.CREATE_MESSAGE" />

@@ -1,0 +1,147 @@
+/*
+ *  Warpnet Android
+ *
+ *  Copyright (C) WarpnetProject and Contributors
+ *
+ *  This file is part of Warpnet Android.
+ *
+ *  Warpnet Android is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Warpnet Android is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.warpnet.warpnetandroid.component.status
+
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.TextUnit
+import com.warpnet.warpnetandroid.model.ui.UiUser
+import com.warpnet.warpnetandroid.ui.LocalActiveAccount
+import org.jsoup.nodes.Document
+
+@Composable
+fun UserScreenName(user: UiUser) {
+  val host = LocalActiveAccount.current?.accountKey?.host
+  UserScreenName(name = remember(user, host) { user.getDisplayScreenName(host) })
+}
+
+@Composable
+fun UserScreenName(name: String) {
+  CompositionLocalProvider(
+    LocalContentAlpha provides ContentAlpha.medium,
+  ) {
+    Text(
+      text = name,
+      maxLines = 1,
+      overflow = TextOverflow.Ellipsis,
+    )
+  }
+}
+
+@Composable
+fun UserName(
+  user: UiUser,
+  modifier: Modifier = Modifier,
+  color: Color = Color.Unspecified,
+  fontSize: TextUnit = TextUnit.Unspecified,
+  fontStyle: FontStyle? = null,
+  fontWeight: FontWeight? = null,
+  fontFamily: FontFamily? = null,
+  letterSpacing: TextUnit = TextUnit.Unspecified,
+  textDecoration: TextDecoration? = null,
+  textAlign: TextAlign? = null,
+  lineHeight: TextUnit = TextUnit.Unspecified,
+  overflow: TextOverflow = TextOverflow.Ellipsis,
+  softWrap: Boolean = true,
+  maxLines: Int = 1,
+  style: TextStyle = LocalTextStyle.current,
+  onUserNameClicked: (String) -> Unit,
+) {
+  UserName(
+    userNameDocument = user.displayNameDocument,
+    layoutDirection = if (user.displayNameIsLeftToRight) {
+      LayoutDirection.Ltr
+    } else {
+      LayoutDirection.Rtl
+    },
+    modifier = modifier,
+    color = color,
+    fontSize = fontSize,
+    fontStyle = fontStyle,
+    fontWeight = fontWeight,
+    fontFamily = fontFamily,
+    letterSpacing = letterSpacing,
+    textDecoration = textDecoration,
+    textAlign = textAlign,
+    lineHeight = lineHeight,
+    overflow = overflow,
+    softWrap = softWrap,
+    maxLines = maxLines,
+    style = style,
+    onUserNameClicked = onUserNameClicked,
+  )
+}
+
+@Composable
+fun UserName(
+  userNameDocument: Document,
+  layoutDirection: LayoutDirection,
+  modifier: Modifier = Modifier,
+  color: Color = Color.Unspecified,
+  fontSize: TextUnit = TextUnit.Unspecified,
+  fontStyle: FontStyle? = null,
+  fontWeight: FontWeight? = null,
+  fontFamily: FontFamily? = null,
+  letterSpacing: TextUnit = TextUnit.Unspecified,
+  textDecoration: TextDecoration? = null,
+  textAlign: TextAlign? = null,
+  lineHeight: TextUnit = TextUnit.Unspecified,
+  overflow: TextOverflow = TextOverflow.Ellipsis,
+  softWrap: Boolean = true,
+  maxLines: Int = 1,
+  style: TextStyle = LocalTextStyle.current,
+  onUserNameClicked: (String) -> Unit,
+) {
+  HtmlText(
+    document = userNameDocument,
+    layoutDirection = layoutDirection,
+    modifier = modifier,
+    color = color,
+    fontSize = fontSize,
+    fontStyle = fontStyle,
+    fontWeight = fontWeight,
+    fontFamily = fontFamily,
+    letterSpacing = letterSpacing,
+    textDecoration = textDecoration,
+    textAlign = textAlign,
+    lineHeight = lineHeight,
+    overflow = overflow,
+    softWrap = softWrap,
+    maxLines = maxLines,
+    textStyle = style,
+    openLink = onUserNameClicked,
+  )
+}

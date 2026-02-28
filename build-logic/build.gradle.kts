@@ -22,50 +22,50 @@ gradlePlugin {
     plugins {
         register("kmp") {
             id = "warpnet-android.kmp"
-            implementationClass = "warpnet-android.plugin.KmpPlugin"
+            implementationClass = "warpnetandroid.plugin.KmpPlugin"
         }
         register("kmp.compose") {
             id = "warpnet-android.kmp.compose"
-            implementationClass = "warpnet-android.plugin.KmpComposePlugin"
+            implementationClass = "warpnetandroid.plugin.KmpComposePlugin"
         }
         register("android") {
             id = "warpnet-android.android"
-            implementationClass = "warpnet-android.plugin.AndroidLibraryPlugin"
+            implementationClass = "warpnetandroid.plugin.AndroidLibraryPlugin"
         }
         register("android.application") {
             id = "warpnet-android.android.application"
-            implementationClass = "warpnet-android.plugin.AndroidApplicationPlugin"
+            implementationClass = "warpnetandroid.plugin.AndroidApplicationPlugin"
         }
         register("project.kmp") {
             id = "warpnet-android.project.kmp"
-            implementationClass = "warpnet-android.plugin.ProjectKmpPlugin"
+            implementationClass = "warpnetandroid.plugin.ProjectKmpPlugin"
         }
         register("project.kmp.compose") {
             id = "warpnet-android.project.kmp.compose"
-            implementationClass = "warpnet-android.plugin.ProjectKmpComposePlugin"
+            implementationClass = "warpnetandroid.plugin.ProjectKmpComposePlugin"
         }
         //
         // // Tool
         //
         register("spotless") {
             id = "warpnet-android.spotless"
-            implementationClass = "warpnet-android.tool.SpotlessPlugin"
+            implementationClass = "warpnetandroid.tool.SpotlessPlugin"
         }
         register("detekt") {
             id = "warpnet-android.detekt"
-            implementationClass = "warpnet-android.tool.DetektPlugin"
+            implementationClass = "warpnetandroid.tool.DetektPlugin"
         }
         register("versionsCheck") {
             id = "warpnet-android.versionsCheck"
-            implementationClass = "warpnet-android.tool.VersionsCheckPlugin"
+            implementationClass = "warpnetandroid.tool.VersionsCheckPlugin"
         }
         register("composeMetrics") {
             id = "warpnet-android.composeMetrics"
-            implementationClass = "warpnet-android.tool.ComposeMetricsPlugin"
+            implementationClass = "warpnetandroid.tool.ComposeMetricsPlugin"
         }
         // register("composeMendable") {
         //     id = "warpnet-android.mendableBuild"
-        //     implementationClass = "warpnet-android.tool.MendableBuildPlugin"
+        //     implementationClass = "warpnetandroid.tool.MendableBuildPlugin"
         // }
     }
 }

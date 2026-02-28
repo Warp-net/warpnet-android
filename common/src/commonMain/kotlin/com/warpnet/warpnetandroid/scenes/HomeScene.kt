@@ -1,0 +1,696 @@
+/*
+ *  Warpnet Android
+ *
+ *  Copyright (C) WarpnetProject and Contributors
+ *
+ *  This file is part of Warpnet Android.
+ *
+ *  Warpnet Android is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Warpnet Android is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.warpnet.warpnetandroid.scenes
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.ListItem
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Surface
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.dp
+import com.warpnet.warpnetandroid.component.UserMetrics
+import com.warpnet.warpnetandroid.component.foundation.AppBar
+import com.warpnet.warpnetandroid.component.foundation.AppBarDefaults
+import com.warpnet.warpnetandroid.component.foundation.ApplyNotification
+import com.warpnet.warpnetandroid.component.foundation.IconTabsComponent
+import com.warpnet.warpnetandroid.component.foundation.InAppNotificationScaffold
+import com.warpnet.warpnetandroid.component.foundation.NestedScrollScaffold
+import com.warpnet.warpnetandroid.component.foundation.Pager
+import com.warpnet.warpnetandroid.component.foundation.PagerState
+import com.warpnet.warpnetandroid.component.foundation.rememberPagerState
+import com.warpnet.warpnetandroid.component.lazy.divider
+import com.warpnet.warpnetandroid.component.navigation.openLink
+import com.warpnet.warpnetandroid.component.navigation.user
+import com.warpnet.warpnetandroid.component.painterResource
+import com.warpnet.warpnetandroid.component.status.UserAvatar
+import com.warpnet.warpnetandroid.component.status.UserName
+import com.warpnet.warpnetandroid.component.status.UserScreenName
+import com.warpnet.warpnetandroid.component.stringResource
+import com.warpnet.warpnetandroid.extensions.observeAsState
+import com.warpnet.warpnetandroid.extensions.withElevation
+import com.warpnet.warpnetandroid.model.HomeMenus
+import com.warpnet.warpnetandroid.model.ui.UiUser
+import com.warpnet.warpnetandroid.navigation.Root
+import com.warpnet.warpnetandroid.preferences.LocalAppearancePreferences
+import com.warpnet.warpnetandroid.preferences.model.AppearancePreferences
+import com.warpnet.warpnetandroid.scenes.home.item
+import com.warpnet.warpnetandroid.ui.LocalActiveAccount
+import com.warpnet.warpnetandroid.ui.LocalActiveAccountViewModel
+import com.warpnet.warpnetandroid.ui.WarpnetScene
+import com.warpnet.warpnetandroid.ui.mediumEmphasisContentContentColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import moe.tlaster.precompose.navigation.BackHandler
+import moe.tlaster.precompose.navigation.Navigator
+
+@Composable
+fun HomeScene(
+  navigator: Navigator,
+) {
+  val account = LocalActiveAccount.current ?: return
+  val scope = rememberCoroutineScope()
+  val tabPosition = LocalAppearancePreferences.current.tabPosition
+  val hideTab = LocalAppearancePreferences.current.hideTabBarWhenScroll
+  val hideFab = LocalAppearancePreferences.current.hideFabWhenScroll
+  val hideAppBar = LocalAppearancePreferences.current.hideAppBarWhenScroll
+  val menuOrder by account.preferences.homeMenuOrder.observeAsState(
+    initial = HomeMenus.values().map { it to it.showDefault }
+  )
+  val menus = remember(account, menuOrder) {
+    menuOrder.filter {
+      it.second && it.first.supportedPlatformType.contains(account.type)
+    }.map {
+      it.first
+    }
+  }
+  val pagerState = rememberPagerState(
+    pageCount = menus.size,
+  )
+  val scaffoldState = rememberScaffoldState()
+  if (scaffoldState.drawerState.isOpen) {
+    BackHandler {
+      scope.launch {
+        scaffoldState.drawerState.close()
+      }
+    }
+  }
+  ApplyNotification(scaffoldState.snackbarHostState)
+  WarpnetScene(
+    navigationBarColorProvider = {
+      if (tabPosition == AppearancePreferences.TabPosition.Bottom) {
+        MaterialTheme.colors.surface.withElevation()
+      } else {
+        MaterialTheme.colors.surface
+      }
+    },
+  ) {
+    if (!menus.any()) {
+      EmptyColumnHomeContent(
+        scaffoldState,
+        toUser = {
+          navigator.user(it)
+        },
+        openLink = {
+          navigator.openLink(it)
+        },
+        navigate = {
+          navigator.navigate(it)
+        }
+      )
+    } else {
+      NestedScrollScaffold(
+        scaffoldState = scaffoldState,
+        enableBottomBarNestedScroll = hideTab,
+        bottomBar = {
+          if (tabPosition == AppearancePreferences.TabPosition.Bottom) {
+            val tabToTop = LocalAppearancePreferences.current.tabToTop
+            HomeBottomNavigation(
+              items = menus,
+              selectedItem = pagerState.currentPage,
+              onItemSelected = {
+                if (pagerState.currentPage == it) {
+                  scope.launch {
+                    menus[it].item.lazyListController.scrollToTop(tabToTop)
+                  }
+                }
+                scope.launch {
+                  pagerState.selectPage {
+                    pagerState.currentPage = it
+                  }
+                }
+              }
+            )
+          }
+        },
+        drawerContent = {
+          HomeDrawer(
+            scaffoldState,
+            toUser = {
+              navigator.user(it)
+            },
+            openLink = {
+              navigator.openLink(it)
+            },
+            navigate = {
+              navigator.navigate(it)
+            }
+          )
+        },
+        floatingActionButton = {
+          menus[pagerState.currentPage].item.Fab(navigator)
+        },
+        floatingActionButtonPosition = menus[pagerState.currentPage].item.floatingActionButtonPosition,
+        enableFloatingActionButtonNestedScroll = hideFab,
+        topBar = {
+          HomeAppBar(
+            tabPosition = tabPosition,
+            menus = menus,
+            pagerState = pagerState,
+            scaffoldState = scaffoldState,
+            scope = scope,
+          )
+        },
+        enableTopBarNestedScroll = hideAppBar
+      ) {
+        Box(
+          modifier = Modifier
+            .fillMaxSize()
+            .padding(it)
+        ) {
+          Pager(
+            state = pagerState,
+          ) {
+            menus[page].item.Content(navigator)
+          }
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun EmptyColumnHomeContent(
+  scaffoldState: ScaffoldState,
+  toUser: (UiUser) -> Unit,
+  openLink: (String) -> Unit,
+  navigate: (String) -> Unit,
+) {
+  InAppNotificationScaffold(
+    scaffoldState = scaffoldState,
+    topBar = {
+      AppBar(
+        backgroundColor = MaterialTheme.colors.surface.withElevation(),
+        navigationIcon = {
+          MenuAvatar(
+            scaffoldState,
+          )
+        },
+      )
+    },
+    drawerContent = {
+      HomeDrawer(
+        scaffoldState = scaffoldState,
+        toUser = toUser,
+        openLink = openLink,
+        navigate = navigate,
+      )
+    }
+  ) {
+    Column(
+      modifier = Modifier.fillMaxSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center,
+    ) {
+      Icon(
+        painter = painterResource(res = com.warpnet.warpnetandroid.MR.files.ic_empty_column),
+        contentDescription = null,
+        modifier = Modifier.size(120.dp),
+      )
+      Spacer(modifier = Modifier.height(EmptyColumnHomeContentDefaults.VerticalPadding))
+      CompositionLocalProvider(
+        LocalContentAlpha provides ContentAlpha.disabled
+      ) {
+        Text(
+          text = "Modify the layout settings",
+          style = MaterialTheme.typography.h6,
+        )
+      }
+    }
+  }
+}
+
+private object EmptyColumnHomeContentDefaults {
+  val VerticalPadding = 48.dp
+}
+
+@Composable
+fun HomeAppBar(
+  tabPosition: AppearancePreferences.TabPosition,
+  menus: List<HomeMenus>,
+  pagerState: PagerState,
+  scaffoldState: ScaffoldState,
+  scope: CoroutineScope,
+  modifier: Modifier = Modifier,
+) {
+  if (tabPosition == AppearancePreferences.TabPosition.Bottom) {
+    AnimatedVisibility(
+      visible = menus[pagerState.currentPage].item.withAppBar,
+      enter = expandVertically(clip = false),
+      exit = shrinkVertically(clip = false),
+      modifier = modifier
+    ) {
+      AppBar(
+        backgroundColor = MaterialTheme.colors.surface.withElevation(),
+        title = {
+          Text(text = menus[pagerState.currentPage].item.name())
+        },
+        navigationIcon = {
+          MenuAvatar(
+            scaffoldState = scaffoldState,
+          )
+        },
+        elevation = if (menus[pagerState.currentPage].item.withAppBar) {
+          AppBarDefaults.TopAppBarElevation
+        } else {
+          0.dp
+        },
+      )
+    }
+  } else {
+    val transition = updateTransition(
+      targetState = menus[pagerState.currentPage].item.withAppBar,
+    )
+    val elevation by transition.animateDp {
+      if (it) {
+        AppBarDefaults.TopAppBarElevation
+      } else {
+        0.dp
+      }
+    }
+    Surface(
+      elevation = elevation,
+      modifier = modifier
+    ) {
+      Row(
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        MenuAvatar(
+          scaffoldState,
+        )
+        val tabToTop = LocalAppearancePreferences.current.tabToTop
+        IconTabsComponent(
+          modifier = Modifier.weight(1f),
+          items = menus.map { it.item.icon() to it.item.name() },
+          selectedItem = pagerState.currentPage,
+          divider = {
+            TabRowDefaults.Divider(thickness = 0.dp)
+          },
+          onItemSelected = {
+            if (pagerState.currentPage == it) {
+              scope.launch {
+                menus[it].item.lazyListController.scrollToTop(tabToTop)
+              }
+            }
+            scope.launch {
+              pagerState.selectPage {
+                pagerState.currentPage = it
+              }
+            }
+          },
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun MenuAvatar(
+  scaffoldState: ScaffoldState,
+) {
+  val scope = rememberCoroutineScope()
+  LocalActiveAccount.current?.let { account ->
+    val user = remember(account) {
+      account.toUi()
+    }
+    UserAvatar(
+      modifier = Modifier.padding(MenuAvatarDefaults.AvatarPadding),
+      size = MenuAvatarDefaults.Size,
+      user = user,
+      onClick = {
+        scope.launch {
+          if (scaffoldState.drawerState.isOpen) {
+            scaffoldState.drawerState.close()
+          } else {
+            scaffoldState.drawerState.open()
+          }
+        }
+      },
+    )
+  }
+}
+
+private object MenuAvatarDefaults {
+  val AvatarPadding = PaddingValues(
+    horizontal = 16.dp,
+    vertical = 0.dp
+  )
+  val Size = 32.dp
+}
+
+@Composable
+fun HomeBottomNavigation(
+  items: List<HomeMenus>,
+  selectedItem: Int,
+  onItemSelected: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val pureDark = LocalAppearancePreferences.current.isDarkModePureBlack
+  val isLight = MaterialTheme.colors.isLight
+  Column {
+    if (pureDark && !isLight) {
+      Divider()
+    }
+    BottomNavigation(
+      backgroundColor = MaterialTheme.colors.surface.withElevation(),
+      modifier = modifier
+    ) {
+      items.forEachIndexed { index, item ->
+        BottomNavigationItem(
+          selectedContentColor = MaterialTheme.colors.primary,
+          unselectedContentColor = mediumEmphasisContentContentColor,
+          icon = {
+            Icon(
+              painter = item.item.icon(),
+              contentDescription = item.item.name(),
+              modifier = Modifier.size(24.dp),
+            )
+          },
+          selected = selectedItem == index,
+          onClick = { onItemSelected.invoke(index) }
+        )
+      }
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@Composable
+private fun HomeDrawer(
+  scaffoldState: ScaffoldState,
+  toUser: (UiUser) -> Unit,
+  openLink: (String) -> Unit,
+  navigate: (String) -> Unit,
+) {
+  var showAccounts by remember { mutableStateOf(false) }
+
+  Column {
+    Spacer(modifier = Modifier.height(16.dp))
+
+    val account = LocalActiveAccount.current ?: return
+    val currentUser = account.toUi()
+    DrawerUserHeader(
+      currentUser,
+      showAccounts,
+      toUser = toUser,
+      onTrailingClicked = {
+        showAccounts = !showAccounts
+      },
+      openLink = {
+        openLink.invoke(it)
+      }
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    UserMetrics(user = currentUser, onclick = navigate)
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    Divider()
+    Box(
+      modifier = Modifier
+        .weight(1f)
+    ) {
+      val activeAccountViewModel = LocalActiveAccountViewModel.current
+      val accounts by activeAccountViewModel.allAccounts.observeAsState(initial = emptyList())
+      val allAccounts = accounts.filter { it.accountKey != account.accountKey }
+      androidx.compose.animation.AnimatedVisibility(
+        visible = showAccounts,
+        enter = fadeIn() + expandVertically(),
+        exit = shrinkVertically() + fadeOut(),
+      ) {
+        LazyColumn {
+          items(allAccounts) { accountDetail ->
+            val user = accountDetail.toUi()
+            ListItem(
+              modifier = Modifier.clickable(
+                onClick = {
+                  activeAccountViewModel.setActiveAccount(accountDetail)
+                }
+              ),
+              icon = {
+                UserAvatar(
+                  user = user,
+                  withPlatformIcon = true,
+                  onClick = {
+                    activeAccountViewModel.setActiveAccount(accountDetail)
+                  },
+                )
+              },
+              text = {
+                UserName(
+                  user = user,
+                  onUserNameClicked = openLink,
+                )
+              },
+              secondaryText = {
+                UserScreenName(user = user)
+              },
+            )
+          }
+          if (allAccounts.any()) {
+            divider()
+          }
+          item {
+            ListItem(
+              modifier = Modifier.clickable(
+                onClick = {
+                  navigate(Root.SignIn.General)
+                }
+              ),
+              text = {
+                Text(
+                  text = stringResource(
+                    res = com.warpnet.warpnetandroid.MR.strings.scene_drawer_sign_in
+                  )
+                )
+              }
+            )
+          }
+          divider()
+          item {
+            ListItem(
+              modifier = Modifier.clickable(
+                onClick = {
+                  navigate(Root.Settings.AccountManagement)
+                }
+              ),
+              text = {
+                Text(
+                  text = stringResource(
+                    res = com.warpnet.warpnetandroid.MR.strings.scene_manage_accounts_title
+                  )
+                )
+              }
+            )
+          }
+        }
+      }
+      androidx.compose.animation.AnimatedVisibility(
+        visible = !showAccounts,
+        enter = fadeIn() + expandVertically(),
+        exit = shrinkVertically() + fadeOut(),
+      ) {
+        val menuOrder by account.preferences.homeMenuOrder.observeAsState(
+          initial = HomeMenus.values().map { it to it.showDefault }
+        )
+        LazyColumn {
+          items(
+            menuOrder.filter {
+              !it.second && it.first.supportedPlatformType.contains(
+                account.type
+              )
+            }.map { it.first }
+          ) {
+            DrawerMenuItem(
+              onClick = {
+                navigate(it.item.route)
+              },
+              title = it.item.name(),
+              icon = it.item.icon(),
+            )
+          }
+        }
+      }
+    }
+
+    Divider()
+    val scope = rememberCoroutineScope()
+    ListItem(
+      modifier = Modifier.clickable(
+        onClick = {
+          scope.launch {
+            scaffoldState.drawerState.close()
+            navigate(Root.Settings.Home)
+          }
+        }
+      ),
+      icon = {
+        Icon(
+          painter = painterResource(
+            res = com.warpnet.warpnetandroid.MR.files.ic_adjustments_horizontal
+          ),
+          contentDescription = stringResource(
+            res = com.warpnet.warpnetandroid.MR.strings.scene_settings_title
+          ),
+          modifier = Modifier.size(24.dp),
+        )
+      },
+      text = {
+        Text(
+          text = stringResource(
+            res = com.warpnet.warpnetandroid.MR.strings.scene_settings_title
+          )
+        )
+      }
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DrawerMenuItem(
+  onClick: () -> Unit,
+  title: String,
+  icon: Painter,
+  iconDescription: String = title
+) {
+  ListItem(
+    modifier = Modifier.clickable(
+      onClick = {
+        onClick.invoke()
+      }
+    ),
+    text = {
+      Text(text = title)
+    },
+    icon = {
+      Icon(
+        painter = icon,
+        contentDescription = iconDescription,
+        modifier = Modifier.size(24.dp),
+      )
+    },
+  )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DrawerUserHeader(
+  user: UiUser?,
+  showAccounts: Boolean,
+  toUser: (UiUser) -> Unit,
+  openLink: (String) -> Unit,
+  onTrailingClicked: () -> Unit = {},
+) {
+  ListItem(
+    icon = {
+      user?.let {
+        UserAvatar(
+          user = it,
+          withPlatformIcon = true,
+          onClick = toUser,
+        )
+      }
+    },
+    text = {
+      if (user != null) {
+        UserName(
+          user = user,
+          onUserNameClicked = openLink,
+        )
+      }
+    },
+    secondaryText = {
+      if (user != null) {
+        UserScreenName(user = user)
+      }
+    },
+    trailing = {
+      val transition = updateTransition(targetState = showAccounts)
+      val rotate by transition.animateFloat {
+        if (it) {
+          180f
+        } else {
+          0f
+        }
+      }
+      IconButton(
+        onClick = {
+          onTrailingClicked.invoke()
+        }
+      ) {
+        Icon(
+          modifier = Modifier.rotate(rotate).size(24.dp),
+          imageVector = Icons.Default.ArrowDropDown,
+          contentDescription = stringResource(
+            res = com.warpnet.warpnetandroid.MR.strings.accessibility_scene_home_drawer_account_dropdown
+          ),
+        )
+      }
+    }
+  )
+}
