@@ -4,20 +4,9 @@ dependencies {
     // Use the simplest possible file reference to avoid the 'module' error
     implementation(fileTree("libs") { include("*.jar") })
 }
-tasks.register<Copy>("vendorDependencies") {
-    // Explicitly grab the files from the runtime configuration
-    val runtimeDeps = configurations.named("runtimeClasspath").get()
 
-    from(runtimeDeps)
-    into(layout.projectDirectory.dir("vendor/libs"))
-
-    // Optional: filter out directories, just get the JARs
-    eachFile {
-        if (this.relativePath.getFile(destinationDir).exists()) {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        }
-    }
-}
+// Register vendorDependencies task using shared utility function
+registerVendorDependenciesTask("android")
 buildscript {
     repositories {
         google()

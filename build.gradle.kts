@@ -5,6 +5,27 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     id("warpnet-android.versionsCheck")
 }
+
+// Root-level task to vendor dependencies from all modules
+// Dynamically discovers all subprojects that have a vendorDependencies task
+afterEvaluate {
+    tasks.register("vendorAllDependencies") {
+        description = "Vendor dependencies from all modules to the repo directory"
+        group = "build setup"
+        
+        val vendorTasks = subprojects
+            .mapNotNull { subproject ->
+                subproject.tasks.findByName("vendorDependencies")
+            }
+        
+        if (vendorTasks.isNotEmpty()) {
+            dependsOn(vendorTasks)
+        } else {
+            logger.warn("No vendorDependencies tasks found in any subprojects")
+        }
+    }
+}
+
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
