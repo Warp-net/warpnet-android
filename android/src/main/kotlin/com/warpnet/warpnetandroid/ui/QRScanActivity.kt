@@ -1,4 +1,4 @@
-package net.warp.android.ui
+package com.warpnet.warpnetandroid.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,11 +13,11 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.warp.android.R
-import net.warp.android.data.ConfigManager
-import net.warp.android.data.NodeConfig
-import net.warp.android.databinding.ActivityQrScanBinding
-import net.warp.android.util.QRCodeParser
+import com.warpnet.warpnetandroid.R
+import com.warpnet.warpnetandroid.data.ConfigManager
+import com.warpnet.warpnetandroid.data.NodeConfig
+import com.warpnet.warpnetandroid.databinding.ActivityQrScanBinding
+import com.warpnet.warpnetandroid.util.QRCodeParser
 
 class QRScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityQrScanBinding

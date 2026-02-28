@@ -1,10 +1,10 @@
-package net.warp.android.util
+package com.warpnet.warpnetandroid.util
 
 import android.util.Base64
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import net.warp.android.data.QRCodeData
+import com.warpnet.warpnetandroid.data.QRCodeData
 
 /**
  * Utility class for parsing QR codes from desktop WarpNet node
