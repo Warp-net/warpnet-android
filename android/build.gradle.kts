@@ -1,5 +1,9 @@
 import java.util.Properties
 
+// Define hasSigningProps as false (signing config not configured)
+// This is set to false as per issue requirements - signing configuration is not set up
+val hasSigningProps = false
+
 // Register vendorDependencies task using shared utility function
 registerVendorDependenciesTask("android")
 buildscript {
@@ -64,7 +68,7 @@ android {
             }
         }
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes.addAll(
                 listOf(
