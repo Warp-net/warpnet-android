@@ -15,7 +15,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.compose.ComposePlugin
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 private typealias Dependency = Optional<Provider<MinimalExternalModuleDependency>>
@@ -39,10 +38,6 @@ fun Project.android(action: LibraryExtension.() -> Unit) {
 
 fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
     extensions.configure(action)
-}
-
-fun TestedExtension.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
-    (this as ExtensionAware).extensions.configure("kotlinOptions", block)
 }
 
 fun DependencyHandlerScope.implementation(dependencyNotation: Any) {

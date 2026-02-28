@@ -10,8 +10,8 @@ class ComposeMetricsPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       tasks.withType<KotlinCompile> {
-        kotlinOptions {
-          freeCompilerArgs = freeCompilerArgs + buildComposeMetricsParameters()
+        compilerOptions {
+          freeCompilerArgs.addAll(buildComposeMetricsParameters())
         }
       }
     }
