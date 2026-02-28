@@ -20,21 +20,21 @@
  */
 package com.warpnet.warpnetandroid.http
 
-import androidx.datastore.core.DataStore
 import com.warpnet.services.http.HttpConfigProvider
 import com.warpnet.services.http.config.HttpConfig
 import com.warpnet.services.proxy.ProxyConfig
+import com.warpnet.warpnetandroid.preferences.PreferencesHolder
 import com.warpnet.warpnetandroid.preferences.model.MiscPreferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 class WarpnetHttpConfigProvider(
-  private val miscPreferences: DataStore<MiscPreferences>
+  private val preferencesHolder: PreferencesHolder
 ) : HttpConfigProvider {
   override fun provideConfig(): HttpConfig {
     return runBlocking {
-      miscPreferences.data.map {
+      preferencesHolder.miscPreferences.map {
         HttpConfig(
           proxyConfig = ProxyConfig(
             enable = it.useProxy,

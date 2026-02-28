@@ -21,31 +21,12 @@
 package com.warpnet.warpnetandroid.model
 
 import android.content.Context
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.preferencesDataStoreFile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
+/**
+ * Creates in-memory account preferences (no persistence).
+ */
 actual class AccountPreferencesFactory(
   private val context: Context,
 ) {
-  actual fun create(accountKey: MicroBlogKey) = createAccountPreferences(context, accountKey)
-
-  private fun createAccountPreferences(
-    context: Context,
-    accountKey: MicroBlogKey,
-  ): AccountPreferences {
-    val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    return AccountPreferences(
-      dataStore = PreferenceDataStoreFactory.create(
-        corruptionHandler = null,
-        migrations = listOf(),
-        scope = scope
-      ) {
-        context.applicationContext.preferencesDataStoreFile(accountKey.toString())
-      },
-      scope = scope
-    )
-  }
+  actual fun create(accountKey: MicroBlogKey) = AccountPreferences()
 }

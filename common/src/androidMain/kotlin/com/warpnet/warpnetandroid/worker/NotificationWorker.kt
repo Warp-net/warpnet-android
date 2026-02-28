@@ -21,23 +21,22 @@
 package com.warpnet.warpnetandroid.worker
 
 import android.content.Context
-import androidx.datastore.core.DataStore
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.warpnet.warpnetandroid.jobs.common.NotificationJob
-import com.warpnet.warpnetandroid.preferences.model.NotificationPreferences
+import com.warpnet.warpnetandroid.preferences.PreferencesHolder
 import kotlinx.coroutines.flow.first
 
 class NotificationWorker(
   appContext: Context,
   params: WorkerParameters,
-  private val notificationPreferences: DataStore<NotificationPreferences>,
+  private val preferencesHolder: PreferencesHolder,
   private val notificationJob: NotificationJob
 
 ) : CoroutineWorker(appContext, params) {
   override suspend fun doWork(): Result {
     return try {
-      if (notificationPreferences.data.first().enableNotification) {
+      if (preferencesHolder.notificationPreferences.first().enableNotification) {
         notificationJob.execute()
       }
       Result.success()

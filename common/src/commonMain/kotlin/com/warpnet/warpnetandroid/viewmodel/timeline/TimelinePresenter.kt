@@ -28,11 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingConfig
 import androidx.paging.compose.LazyPagingItems
@@ -60,9 +55,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
 
 private const val timelinePageSize = 20
 private const val timelineInitialLoadSize = 40
@@ -87,7 +79,6 @@ enum class SavedStateKeyType(val key: String) {
 fun TimelinePresenter(
   event: Flow<TimeLineEvent>,
   savedStateKeyType: SavedStateKeyType,
-  dataStore: DataStore<Preferences> = get(),
   database: CacheDatabase = get(),
   notificationRepository: NotificationRepository = get(),
 ): TimelineState {
@@ -187,43 +178,7 @@ fun TimelinePresenter(
     rememberLazyListState()
   }
 
-  LaunchedEffect(accountState) {
-    val firstVisibleItemIndexKey = intPreferencesKey("$savedStateKey$FIRST_VISIBLE_KEY_SUFFIX")
-    val firstVisibleItemScrollOffsetKey =
-      intPreferencesKey("$savedStateKey$FIRST_OFFSET_KEY_SUFFIX")
-    dataStore.data.firstOrNull()?.let {
-      val firstVisibleItemIndex = it[firstVisibleItemIndexKey] ?: 0
-      val firstVisibleItemScrollOffset = it[firstVisibleItemScrollOffsetKey] ?: 0
-      TimelineScrollState(
-        firstVisibleItemIndex = firstVisibleItemIndex,
-        firstVisibleItemScrollOffset = firstVisibleItemScrollOffset,
-      )
-    }?.let {
-      listState.scrollToItem(
-        it.firstVisibleItemIndex,
-        it.firstVisibleItemScrollOffset
-      )
-    }
-  }
-
-  LaunchedEffect(accountState) {
-    // TODO FIXME #listState 20211119: listState.isScrollInProgress is always false on desktop
-    //  - https://github.com/JetBrains/compose-jb/issues/1423
-    snapshotFlow { listState.isScrollInProgress }
-      .distinctUntilChanged()
-      .filter { !it }
-      .filter { listState.layoutInfo.totalItemsCount != 0 }
-      .collect {
-        dataStore.edit { preferences ->
-          val firstVisibleItemIndexKey =
-            intPreferencesKey("$savedStateKey$FIRST_VISIBLE_KEY_SUFFIX")
-          val firstVisibleItemScrollOffsetKey =
-            intPreferencesKey("$savedStateKey$FIRST_OFFSET_KEY_SUFFIX")
-          preferences[firstVisibleItemIndexKey] = listState.firstVisibleItemIndex
-          preferences[firstVisibleItemScrollOffsetKey] = listState.firstVisibleItemScrollOffset
-        }
-      }
-  }
+  // Scroll position is not persisted in stateless mode
 
   LaunchedEffect(Unit) {
     event.catch {}.collect {
