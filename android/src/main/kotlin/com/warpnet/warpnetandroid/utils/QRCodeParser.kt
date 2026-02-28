@@ -1,4 +1,4 @@
-package com.warpnet.warpnetandroid.util
+package com.warpnet.warpnetandroid.utils
 
 import android.util.Base64
 import android.util.Log

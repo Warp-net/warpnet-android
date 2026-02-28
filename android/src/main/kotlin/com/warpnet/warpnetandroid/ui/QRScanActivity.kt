@@ -17,7 +17,7 @@ import com.warpnet.warpnetandroid.R
 import com.warpnet.warpnetandroid.data.ConfigManager
 import com.warpnet.warpnetandroid.data.NodeConfig
 import com.warpnet.warpnetandroid.databinding.ActivityQrScanBinding
-import com.warpnet.warpnetandroid.util.QRCodeParser
+import com.warpnet.warpnetandroid.utils.QRCodeParser
 
 class QRScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityQrScanBinding
