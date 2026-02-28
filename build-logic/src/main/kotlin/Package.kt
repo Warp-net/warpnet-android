@@ -1,7 +1,7 @@
 object Package {
     const val group = "com.warpnet"
     const val name = "Warpnet Android"
-    const val id = "$group.warpnet-android"
+    const val id = "$group.warpnetandroid"
     val versionName =
         "${Version.main}.${Version.mirror}.${Version.patch}${if (Version.revision.isNotEmpty()) "-${Version.revision}" else ""}"
     const val copyright = "Copyright (C) WarpnetProject and Contributors"
