@@ -2,6 +2,9 @@ import java.util.Properties
 
 // Register vendorDependencies task using shared utility function
 registerVendorDependenciesTask("android")
+
+// Define hasSigningProps as false (signing config not configured)
+val hasSigningProps = false
 buildscript {
     repositories {
         google()
@@ -64,7 +67,7 @@ android {
             }
         }
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes.addAll(
                 listOf(

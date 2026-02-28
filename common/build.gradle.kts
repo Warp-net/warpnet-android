@@ -114,7 +114,7 @@ android {
         disable.add("JavascriptInterface")
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes.addAll(
                 listOf(
