@@ -131,7 +131,7 @@ The task uses different configuration names depending on the module type:
 
 1. **Flat structure**: Dependencies are stored as a flat list of JARs, not in Maven's hierarchical structure
 2. **No metadata**: POM files and other metadata are not copied, only the JAR files
-3. **Runtime classpath only**: The task copies dependencies from the runtime classpath configuration, which includes both compile-time and runtime dependencies along with their transitive dependencies. However, it doesn't vendor build-time-only dependencies like annotation processors or linters.
+3. **Runtime dependencies only**: The task copies dependencies from the runtime classpath configuration, which includes runtime dependencies and their transitive dependencies. It doesn't vendor compile-time-only dependencies (compileOnly) or build-time-only dependencies like annotation processors or linters.
 4. **No transitive resolution metadata**: The task copies resolved JAR files but doesn't maintain POM files that describe dependency relationships
 
 For a more sophisticated vendoring solution with proper Maven repository structure, consider using:

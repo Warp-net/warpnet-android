@@ -8,9 +8,12 @@ import org.gradle.api.tasks.Copy
  * Finds the appropriate runtime configuration for vendoring dependencies.
  * 
  * This function tries to find runtime configurations in the following order:
- * 1. releaseRuntimeClasspath (preferred for Android/KMP release builds)
+ * 1. releaseRuntimeClasspath (preferred for production vendoring)
  * 2. debugRuntimeClasspath (fallback for debug builds)
  * 3. jvmRuntimeClasspath (fallback for JVM-specific KMP targets)
+ * 
+ * The release configuration is preferred because it typically contains the
+ * production dependencies without debug-only libraries.
  * 
  * @return The runtime configuration if found, null otherwise
  */
