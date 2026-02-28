@@ -40,10 +40,45 @@ The project had `vendorDependencies` tasks in three modules (android, common, se
 
 ## Changes Made
 
-### File: `services/build.gradle.kts`
+### Shared Utilities: `build-logic/src/main/kotlin/warpnetandroid/VendoringUtils.kt`
+
+**Created** a new utility file with reusable functions to eliminate code duplication:
 
 ```kotlin
-// BEFORE
+/**
+ * Finds the appropriate runtime configuration for vendoring dependencies.
+ */
+fun Project.findRuntimeConfigurationForVendoring(): Configuration? {
+    return configurations.findByName("releaseRuntimeClasspath")
+        ?: configurations.findByName("debugRuntimeClasspath")
+        ?: configurations.findByName("jvmRuntimeClasspath")
+}
+
+/**
+ * Registers a vendorDependencies task that copies all runtime dependencies
+ * to the project's root repo directory.
+ */
+fun Project.registerVendorDependenciesTask(moduleName: String) {
+    afterEvaluate {
+        tasks.register<Copy>("vendorDependencies") {
+            val runtimeDeps = findRuntimeConfigurationForVendoring()
+            
+            if (runtimeDeps != null) {
+                from(runtimeDeps)
+                into(rootProject.layout.projectDirectory.dir("repo"))
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            } else {
+                logger.warn("No runtime configuration found for vendoring in $moduleName module")
+            }
+        }
+    }
+}
+```
+
+### File: `services/build.gradle.kts`, `android/build.gradle.kts`, `common/build.gradle.kts`
+
+```kotlin
+// BEFORE (duplicated across all three files)
 tasks.register<Copy>("vendorDependencies") {
     val runtimeDeps = configurations.named("runtimeClasspath").get()
     from(runtimeDeps)
@@ -55,48 +90,44 @@ tasks.register<Copy>("vendorDependencies") {
     }
 }
 
-// AFTER
+// AFTER (consistent across all three files)
+registerVendorDependenciesTask("services")  // or "android", "common"
+```
+
+**Benefits**:
+- Eliminates code duplication (15+ lines reduced to 1 line per module)
+- Centralizes logic for easier maintenance
+- Ensures consistent behavior across all modules
+
+### File: `build.gradle.kts` (Root)
+
+**Added** a convenient root-level task with dynamic subproject discovery:
+
+```kotlin
+// Dynamically discovers all subprojects that have a vendorDependencies task
 afterEvaluate {
-    tasks.register<Copy>("vendorDependencies") {
-        val runtimeDeps = configurations.findByName("releaseRuntimeClasspath") 
-            ?: configurations.findByName("debugRuntimeClasspath")
-            ?: configurations.findByName("jvmRuntimeClasspath")
+    tasks.register("vendorAllDependencies") {
+        description = "Vendor dependencies from all modules to the repo directory"
+        group = "build setup"
         
-        if (runtimeDeps != null) {
-            from(runtimeDeps)
-            into(rootProject.layout.projectDirectory.dir("repo"))
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        val vendorTasks = subprojects
+            .mapNotNull { subproject ->
+                subproject.tasks.findByName("vendorDependencies")
+            }
+        
+        if (vendorTasks.isNotEmpty()) {
+            dependsOn(vendorTasks)
         } else {
-            logger.warn("No runtime configuration found for vendoring in services module")
+            logger.warn("No vendorDependencies tasks found in any subprojects")
         }
     }
 }
 ```
 
-### File: `android/build.gradle.kts`
-
-Same transformation as services, but specifically for Android module.
-
-### File: `common/build.gradle.kts`
-
-Same transformation as services, but for the common KMP module.
-
-### File: `build.gradle.kts` (Root)
-
-**Added** a convenient root-level task:
-
-```kotlin
-tasks.register("vendorAllDependencies") {
-    description = "Vendor dependencies from all modules to the repo directory"
-    group = "build setup"
-    
-    dependsOn(
-        ":android:vendorDependencies",
-        ":common:vendorDependencies",
-        ":services:vendorDependencies"
-    )
-}
-```
+**Benefits**:
+- Automatically discovers all modules with vendorDependencies tasks
+- No need to update when modules are added/removed
+- Warns if no vendoring tasks are found
 
 ### File: `.gitignore`
 
