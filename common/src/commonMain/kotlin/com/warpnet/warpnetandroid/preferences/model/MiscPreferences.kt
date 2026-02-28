@@ -18,16 +18,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.di.modules
+package com.warpnet.warpnetandroid.preferences.model
 
-import com.warpnet.warpnetandroid.preferences.PreferencesHolder
-import org.koin.dsl.module
+import kotlinx.serialization.Serializable
 
-/**
- * Provides in-memory preferences (no persistence).
- */
-internal val preferencesModule = module {
-  single {
-    PreferencesHolder()
+
+data class MiscPreferences(
+  val nitterInstance: String = "",
+  val useProxy: Boolean = false,
+  val proxyType: ProxyType = ProxyType.HTTP,
+  val proxyServer: String = "",
+  val proxyPort: Int = 0,
+  val proxyUserName: String = "",
+  val proxyPassword: String = "",
+) {
+  
+  enum class ProxyType {
+    HTTP,
+    SOCKS,
+    REVERSE,
   }
 }

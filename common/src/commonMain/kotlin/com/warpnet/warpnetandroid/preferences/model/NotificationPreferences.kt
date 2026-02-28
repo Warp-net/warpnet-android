@@ -18,16 +18,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.warpnetandroid.di.modules
+package com.warpnet.warpnetandroid.preferences.model
 
-import com.warpnet.warpnetandroid.preferences.PreferencesHolder
-import org.koin.dsl.module
+import kotlinx.serialization.Serializable
 
-/**
- * Provides in-memory preferences (no persistence).
- */
-internal val preferencesModule = module {
-  single {
-    PreferencesHolder()
-  }
-}
+
+data class NotificationPreferences(
+  val enableNotification: Boolean = true,
+)
