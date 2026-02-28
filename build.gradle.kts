@@ -5,6 +5,19 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     id("warpnet-android.versionsCheck")
 }
+
+// Root-level task to vendor dependencies from all modules
+tasks.register("vendorAllDependencies") {
+    description = "Vendor dependencies from all modules to the repo directory"
+    group = "build setup"
+    
+    dependsOn(
+        ":android:vendorDependencies",
+        ":common:vendorDependencies",
+        ":services:vendorDependencies"
+    )
+}
+
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
