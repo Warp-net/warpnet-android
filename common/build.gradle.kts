@@ -6,24 +6,12 @@ plugins {
     id("warpnet-android.project.kmp.compose")
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.sqldelight)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.multiplatformResources)
 }
 
 group = Package.group
 version = Package.versionName
-
-sqldelight {
-    database("SqlDelightAppDatabase") {
-        packageName = "${Package.id}.sqldelight"
-        sourceFolders = listOf("sqldelight/app")
-    }
-    database("SqlDelightCacheDatabase") {
-        packageName = "${Package.id}.sqldelight"
-        sourceFolders = listOf("sqldelight/cache")
-    }
-}
 
 kotlin {
     sourceSets {
@@ -34,8 +22,7 @@ kotlin {
                 api(libs.bundles.compose)
                 implementation(libs.bundles.kotlinx)
                 implementation(libs.bundles.reftrofit2)
-                implementation(libs.bundles.androidx.common)
-                implementation(libs.sqldelight.coroutines.extensions)
+                implementation(libs.androidx.pagging)
                 implementation(libs.square.okhttp)
                 api(libs.square.okio)
                 api(libs.koin.core)
@@ -62,7 +49,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.bundles.androidx)
-                implementation(libs.bundles.room)
                 implementation(libs.bundles.exoplayer)
                 implementation(libs.kotlinx.coroutines.android)
                 implementation(libs.koin.android)
@@ -75,19 +61,15 @@ kotlin {
         val androidAndroidTest by getting {
             dependencies {
                 implementation(libs.bundles.test.android)
-                implementation(libs.sqldelight.android.driver)
-                implementation(libs.room.test)
             }
         }
         val androidTest by getting {
             dependencies {
-                implementation(libs.sqldelight.sqlite.driver)
             }
         }
         val desktopMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.sqldelight.sqlite.driver)
                 implementation("uk.co.caprica:vlcj:4.8.2")
                 implementation("de.huxhorn.lilith:de.huxhorn.lilith.3rdparty.junique:1.0.4")
                 implementation("org.javassist:javassist:3.29.2-GA")
@@ -101,7 +83,6 @@ kotlin {
 
 dependencies {
     kspAll(libs.compose.precompose.ksp)
-    kspAndroid(libs.room.ksp)
 }
 
 buildkonfig {
@@ -123,7 +104,6 @@ buildkonfig {
 }
 
 android {
-    sourceSets["androidTest"].assets.srcDirs("$projectDir/schemas")
     defaultConfig {
         testInstrumentationRunnerArguments["notPackage"] = "com.warpnet.warpnetandroid.viewmodel"
     }
@@ -155,10 +135,6 @@ android {
 
 multiplatformResources {
     multiplatformResourcesPackage = Package.id
-}
-
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 tasks.create("generateTranslation") {
