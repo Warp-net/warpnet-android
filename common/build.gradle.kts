@@ -13,11 +13,6 @@ plugins {
 group = Package.group
 version = Package.versionName
 
-dependencies {
-    // Use the simplest possible file reference to avoid the 'module' error
-    implementation(fileTree("libs") { include("*.jar") })
-}
-
 // Register vendorDependencies task using shared utility function
 registerVendorDependenciesTask("common")
 kotlin {
