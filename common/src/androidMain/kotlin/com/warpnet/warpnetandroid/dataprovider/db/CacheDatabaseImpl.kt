@@ -151,6 +151,8 @@ internal class CacheDatabaseImpl : CacheDatabase {
   }
 
   override suspend fun <R> withTransaction(block: suspend () -> R): R {
+    // WARNING: This implementation doesn't provide ACID guarantees.
+    // Callers should not depend on transactional behavior in stateless mode.
     // Execute block directly without transaction support
     return block()
   }

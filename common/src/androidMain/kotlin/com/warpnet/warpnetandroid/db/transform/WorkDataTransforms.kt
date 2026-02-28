@@ -31,27 +31,27 @@ import com.warpnet.warpnetandroid.model.job.DirectMessageSendData
  */
 
 fun ComposeData.toWorkData(): Data {
-  // Simplified stub - actual implementation would serialize ComposeData
-  return Data.Builder().build()
+  // Stub implementation for stateless mode
+  // Background work operations requiring data serialization will fail
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }
 
 fun Data.toComposeData(): ComposeData {
-  // Simplified stub - returns default ComposeData
-  throw NotImplementedError("WorkData transforms not implemented in stateless mode")
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }
 
 fun DirectMessageDeleteData.toWorkData(): Data {
-  return Data.Builder().build()
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }
 
 fun Data.toDirectMessageDeleteData(): DirectMessageDeleteData {
-  throw NotImplementedError("WorkData transforms not implemented in stateless mode")
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }
 
 fun DirectMessageSendData.toWorkData(): Data {
-  return Data.Builder().build()
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }
 
 fun Data.toDirectMessageSendData(): DirectMessageSendData {
-  throw NotImplementedError("WorkData transforms not implemented in stateless mode")
+  throw NotImplementedError("WorkData transforms are not supported in stateless mode. Background work operations requiring data serialization will fail.")
 }

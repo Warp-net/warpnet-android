@@ -20,5 +20,9 @@
  */
 package com.warpnet.warpnetandroid.db.dao
 
-// Empty interface - no methods are actually called in the codebase
+/**
+ * Empty DAO interface - kept as stub for API compatibility.
+ * No methods are actually used in the codebase based on analysis.
+ * If search functionality is needed, this should be implemented.
+ */
 interface SearchDao
