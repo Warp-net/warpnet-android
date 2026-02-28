@@ -1,10 +1,10 @@
 import java.util.Properties
 
-// Register vendorDependencies task using shared utility function
-registerVendorDependenciesTask("android")
-
 // Define hasSigningProps as false (signing config not configured)
 val hasSigningProps = false
+
+// Register vendorDependencies task using shared utility function
+registerVendorDependenciesTask("android")
 buildscript {
     repositories {
         google()
