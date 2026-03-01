@@ -29,5 +29,4 @@ interface WarpnetResources :
   FriendshipResources,
   FollowsResources,
   ListsResources,
-  TrendsResources,
   DirectMessagesResources
