@@ -19,7 +19,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/peerstore"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	noise "github.com/libp2p/go-libp2p/p2p/security/noise"
+	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
 )
 
@@ -120,15 +120,12 @@ func (c *clientNode) connect(peerInfo string) error {
 }
 
 func (c *clientNode) stream(protocolID string, data []byte) ([]byte, error) {
-	if c == nil || c.host == nil {
-		return nil, fmt.Errorf("not initialized")
-	}
-	c.mu.RLock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	if c.desktopPeerID == "" {
 		return nil, fmt.Errorf("not connected to desktop node")
 	}
 	desktopPeerID := c.desktopPeerID
-	c.mu.RUnlock()
 
 	if protocolID == "" {
 		return nil, fmt.Errorf("empty protocol ID")
@@ -183,6 +180,8 @@ func closeWrite(s network.Stream) {
 }
 
 func (c *clientNode) getPeerID() string {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	return c.host.ID().String()
 }
 
@@ -215,6 +214,7 @@ func (c *clientNode) disconnect() error {
 }
 
 func (c *clientNode) close() error {
+	defer func() { recover() }()
 	c.cancel()
 	return c.host.Close()
 }
