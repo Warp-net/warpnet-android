@@ -2,21 +2,26 @@ package node
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 )
 
 // Mobile-friendly wrapper types for gomobile compatibility
 // gomobile bind has limitations on complex types
 
-var clientInstance *WarpNetClient
+var clientInstance *clientNode
 
-// Initialize creates a new WarpNet client with optional PSK
+// Method creates a new WarpNet client with optional PSK
 // pskBase64: base64-encoded PSK (32 bytes), empty string for no PSK
 // Returns error message or empty string on success
-func Initialize(pskBase64 string) string {
-	var psk []byte
-	var err error
+func Initialize(pskBase64 string, bootstrapNodes []string) string {
+	var (
+		psk []byte
+		err error
+	)
+
+	if clientInstance != nil {
+		return fmt.Sprintf("already initialized")
+	}
 
 	if pskBase64 != "" {
 		psk, err = base64.StdEncoding.DecodeString(pskBase64)
@@ -28,7 +33,7 @@ func Initialize(pskBase64 string) string {
 		}
 	}
 
-	client, err := NewClient(psk)
+	client, err := newClient(psk, bootstrapNodes)
 	if err != nil {
 		return fmt.Sprintf("failed to create client: %v", err)
 	}
@@ -37,16 +42,12 @@ func Initialize(pskBase64 string) string {
 	return ""
 }
 
-// ConnectToNode establishes connection to desktop node
-// peerID: base58-encoded peer ID
-// address: multiaddr string (e.g., "/ip4/192.168.1.100/tcp/4001")
-// Returns error message or empty string on success
-func ConnectToNode(peerID string, address string) string {
+func Connect(addrInfo string) string {
 	if clientInstance == nil {
 		return "client not initialized"
 	}
 
-	err := clientInstance.Connect(peerID, address)
+	err := clientInstance.connect(addrInfo)
 	if err != nil {
 		return fmt.Sprintf("connection failed: %v", err)
 	}
@@ -54,55 +55,42 @@ func ConnectToNode(peerID string, address string) string {
 	return ""
 }
 
-// Stream sends a request to the desktop node
-// protocolID: the libp2p protocol (e.g., "/warpnet/api/feed/1.0.0")
-// dataJSON: JSON-encoded request data
-// Returns JSON response or error in format: {"error": "message"} or {"data": "..."}
 func Stream(protocolID string, data string) string {
 	if clientInstance == nil {
-		return `{"error": "client not initialized"}`
+		return "client not initialized"
 	}
 
-	response, err := clientInstance.SendMessage(protocolID, []byte(data))
+	response, err := clientInstance.stream(protocolID, []byte(data))
 	if err != nil {
-		errJSON, _ := json.Marshal(map[string]string{"error": err.Error()})
-		return string(errJSON)
+		return err.Error()
 	}
 
-	// Wrap response in data field
-	result := map[string]string{"data": string(response)}
-	resultJSON, _ := json.Marshal(result)
-	return string(resultJSON)
+	return string(response)
 }
 
-// GetClientPeerID returns the client's own peer ID
-func GetClientPeerID() string {
+func PeerID() string {
 	if clientInstance == nil {
 		return ""
 	}
-	return clientInstance.GetPeerID()
+	return clientInstance.getPeerID()
 }
 
-// CheckConnection checks if connected to desktop node
-// Returns "true" or "false"
-func CheckConnection() string {
+func IsConnected() string {
 	if clientInstance == nil {
 		return "false"
 	}
-	if clientInstance.IsConnected() {
+	if clientInstance.isConnected() {
 		return "true"
 	}
 	return "false"
 }
 
-// DisconnectFromNode disconnects from the desktop node
-// Returns error message or empty string on success
-func DisconnectFromNode() string {
+func Disconnect() string {
 	if clientInstance == nil {
 		return ""
 	}
 
-	err := clientInstance.Disconnect()
+	err := clientInstance.disconnect()
 	if err != nil {
 		return fmt.Sprintf("disconnect failed: %v", err)
 	}
@@ -110,14 +98,12 @@ func DisconnectFromNode() string {
 	return ""
 }
 
-// Shutdown closes the entire client
-// Returns error message or empty string on success
 func Shutdown() string {
 	if clientInstance == nil {
 		return ""
 	}
 
-	err := clientInstance.Close()
+	err := clientInstance.close()
 	if err != nil {
 		return fmt.Sprintf("shutdown failed: %v", err)
 	}

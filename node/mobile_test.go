@@ -2,7 +2,6 @@ package node
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"testing"
 )
 
@@ -10,7 +9,7 @@ func TestInitialize(t *testing.T) {
 	// Clean up before test
 	clientInstance = nil
 
-	result := Initialize("")
+	result := Initialize("", []string{})
 	if result != "" {
 		t.Fatalf("Initialize failed: %s", result)
 	}
@@ -34,7 +33,7 @@ func TestInitializeWithPSK(t *testing.T) {
 	}
 	pskBase64 := base64.StdEncoding.EncodeToString(psk)
 
-	result := Initialize(pskBase64)
+	result := Initialize(pskBase64, []string{})
 	if result != "" {
 		t.Fatalf("Initialize with PSK failed: %s", result)
 	}
@@ -55,7 +54,7 @@ func TestInitializeWithInvalidPSK(t *testing.T) {
 	psk := make([]byte, 16)
 	pskBase64 := base64.StdEncoding.EncodeToString(psk)
 
-	result := Initialize(pskBase64)
+	result := Initialize(pskBase64, []string{})
 	if result == "" {
 		t.Fatal("Initialize should fail with invalid PSK length")
 	}
@@ -69,7 +68,7 @@ func TestInitializeWithInvalidBase64(t *testing.T) {
 	// Clean up before test
 	clientInstance = nil
 
-	result := Initialize("not-valid-base64!@#$")
+	result := Initialize("not-valid-base64!@#$", []string{})
 	if result == "" {
 		t.Fatal("Initialize should fail with invalid base64")
 	}
@@ -84,16 +83,16 @@ func TestGetClientPeerID(t *testing.T) {
 	clientInstance = nil
 
 	// Should return empty string when not initialized
-	peerID := GetClientPeerID()
+	peerID := PeerID()
 	if peerID != "" {
 		t.Fatalf("Expected empty peer ID before init, got: %s", peerID)
 	}
 
 	// Initialize client
-	Initialize("")
+	Initialize("", []string{})
 
 	// Should return peer ID after initialization
-	peerID = GetClientPeerID()
+	peerID = PeerID()
 	if peerID == "" {
 		t.Fatal("Peer ID is empty after initialization")
 	}
@@ -107,16 +106,16 @@ func TestCheckConnection(t *testing.T) {
 	clientInstance = nil
 
 	// Should return "false" when not initialized
-	result := CheckConnection()
+	result := IsConnected()
 	if result != "false" {
 		t.Fatalf("Expected 'false' before init, got: %s", result)
 	}
 
 	// Initialize client
-	Initialize("")
+	Initialize("", []string{})
 
 	// Should return "false" when initialized but not connected
-	result = CheckConnection()
+	result = IsConnected()
 	if result != "false" {
 		t.Fatalf("Expected 'false' when not connected, got: %s", result)
 	}
@@ -129,7 +128,8 @@ func TestConnectToNodeNotInitialized(t *testing.T) {
 	// Clean up before test
 	clientInstance = nil
 
-	result := ConnectToNode("12D3KooWTest", "/ip4/127.0.0.1/tcp/4001")
+	addrInfo := "/ip4/207.154.221.44/tcp/4011/p2p/12D3KooWMKZFrp1BDKg9amtkv5zWnLhuUXN32nhqMvbtMdV2hz7j"
+	result := Connect(addrInfo)
 	if result == "" {
 		t.Fatal("ConnectToNode should fail when not initialized")
 	}
@@ -143,16 +143,10 @@ func TestSendRequestNotInitialized(t *testing.T) {
 	// Clean up before test
 	clientInstance = nil
 
-	result := SendRequest("/test/protocol", "{}")
-	
-	var response map[string]string
-	err := json.Unmarshal([]byte(result), &response)
-	if err != nil {
-		t.Fatalf("Failed to parse response: %v", err)
-	}
+	result := Stream("/test/protocol", "{}")
 
-	if response["error"] != "client not initialized" {
-		t.Fatalf("Expected 'client not initialized' error, got: %v", response)
+	if result != "client not initialized" {
+		t.Fatalf("Expected 'client not initialized' error, got: %v", result)
 	}
 }
 
@@ -161,14 +155,14 @@ func TestDisconnectFromNode(t *testing.T) {
 	clientInstance = nil
 
 	// Should not error when not initialized
-	result := DisconnectFromNode()
+	result := Disconnect()
 	if result != "" {
 		t.Fatalf("DisconnectFromNode should not error when not initialized, got: %s", result)
 	}
 
 	// Initialize and disconnect
-	Initialize("")
-	result = DisconnectFromNode()
+	Initialize("", []string{})
+	result = Disconnect()
 	if result != "" {
 		t.Fatalf("DisconnectFromNode failed: %s", result)
 	}
@@ -188,7 +182,7 @@ func TestShutdown(t *testing.T) {
 	}
 
 	// Initialize and shutdown
-	Initialize("")
+	Initialize("", []string{})
 	result = Shutdown()
 	if result != "" {
 		t.Fatalf("Shutdown failed: %s", result)
@@ -204,8 +198,8 @@ func TestMultipleShutdowns(t *testing.T) {
 	// Clean up before test
 	clientInstance = nil
 
-	Initialize("")
-	
+	Initialize("", []string{})
+
 	result := Shutdown()
 	if result != "" {
 		t.Fatalf("First shutdown failed: %s", result)
@@ -220,9 +214,9 @@ func TestMultipleShutdowns(t *testing.T) {
 
 // Helper function
 func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && 
-		(s[:len(substr)] == substr || s[len(s)-len(substr):] == substr || 
-		 findSubstring(s, substr)))
+	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) &&
+		(s[:len(substr)] == substr || s[len(s)-len(substr):] == substr ||
+			findSubstring(s, substr)))
 }
 
 func findSubstring(s, substr string) bool {
