@@ -8,6 +8,12 @@ plugins {
 group = Package.group
 version = Package.versionName
 
+android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+}
 // Register vendorDependencies task using shared utility function
 registerVendorDependenciesTask("services")
 kotlin {
@@ -27,6 +33,7 @@ kotlin {
             }
         }
     }
+    jvmToolchain(21)
 }
 
 android {

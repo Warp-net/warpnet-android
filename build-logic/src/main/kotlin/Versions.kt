@@ -2,13 +2,13 @@ import org.gradle.api.JavaVersion
 
 object Versions {
     object Android {
-      const val min = 21
-      const val compile = 33
+      const val min = 31
+      const val compile = 36
       const val target = compile
     }
 
     object Java {
-        const val jvmTarget = "11"
-        val java = JavaVersion.VERSION_17
+        const val jvmTarget = "21"
+        val java = JavaVersion.VERSION_21
     }
 }

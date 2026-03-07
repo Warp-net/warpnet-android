@@ -139,7 +139,7 @@ android {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = Package.id
+    resourcesPackage.set(Package.id)
 }
 
 tasks.create("generateTranslation") {

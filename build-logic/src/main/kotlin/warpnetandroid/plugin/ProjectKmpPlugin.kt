@@ -14,13 +14,10 @@ class ProjectKmpPlugin : Plugin<Project> {
         apply("warpnet-android.android")
       }
       kotlin {
-        android()
+        this.androidTarget()
         jvm("desktop") {
           setupJvm()
         }
-        // ios()
-        // macosX64()
-        // macosArm64()
 
         sourceSets.apply {
           val commonMain = getByName("commonMain") {
