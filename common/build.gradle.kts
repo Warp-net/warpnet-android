@@ -2,12 +2,17 @@ import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
 @Suppress("DSL_SCOPE_VIOLATION")
+
+android {
+    namespace = "com.warpnet.warpnetandroid.common"
+}
 plugins {
     id("warpnet-android.project.kmp.compose")
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.multiplatformResources)
+    alias(libs.plugins.kotlin.compose)
 }
 
 group = Package.group
@@ -30,7 +35,6 @@ kotlin {
                 api(libs.koin.core)
                 api(libs.mokoResources)
                 api(libs.kfilepicker)
-                api(libs.warpnetParser)
                 api(libs.cache4k)
                 implementation("org.jsoup:jsoup:1.15.3")
                 implementation("app.cash.turbine:turbine:0.12.1")

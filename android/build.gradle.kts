@@ -18,6 +18,7 @@ buildscript {
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("warpnet-android.android.application")
+    alias(libs.plugins.kotlin.compose)
 }
 
 

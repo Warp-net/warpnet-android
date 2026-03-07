@@ -1,8 +1,8 @@
 [versions]
 agp = "8.7.3"
-compose-jb = "1.3.0-rc01"
+compose-jb = "1.7.3"
 kotlin = "2.0.21"
-ksp = "2.0.21-1.0.29"
+ksp = "2.0.21-1.0.28"
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.4.1"
 koin = "3.3.2"
@@ -26,6 +26,7 @@ exoplayer = "2.18.2"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
@@ -121,7 +122,6 @@ jetbrains-markdown = "org.jetbrains:markdown:0.3.3"
 mokoResources = { module = "dev.icerock.moko:resources", version.ref = "moko" }
 #bignum = "com.ionspin.kotlin:bignum:0.3.7"
 kfilepicker = "moe.tlaster:KFilePicker:1.0.5"
-warpnetParser = "moe.tlaster:warpnet-parser:0.1.3"
 #kWalletConnect = "io.github.joesteven:kwalletconnect:1.0.3-dev"
 warpnetComposeRulesDetekt = "com.warpnet.compose.rules:detekt:0.0.26"
 #krypto = "com.soywiz.korlibs.krypto:krypto:3.4.0"
