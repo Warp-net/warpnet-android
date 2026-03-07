@@ -63,6 +63,14 @@ interface MastodonResources {
     @Query("max_id") maxId: String? = null,
   ): List<Status>
 
+  @GET("/api/v1/timelines/list/{id}")
+  suspend fun listTimeline(
+    @Path("id") id: String,
+    @Query("limit") limit: Int = 20,
+    @Query("since_id") sinceId: String? = null,
+    @Query("max_id") maxId: String? = null,
+  ): List<Status>
+
   @GET("/api/v1/accounts/{id}/statuses")
   suspend fun userTimeline(
     @Path("id") id: String,

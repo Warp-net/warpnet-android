@@ -91,6 +91,7 @@ class MastodonService(
 
   override suspend fun mentionsTimeline(count: Int, since_id: String?, max_id: String?): List<IStatus> =
     resources.notifications(limit = count, sinceId = since_id, maxId = max_id)
+      .filter { it.type == com.warpnet.services.mastodon.model.NotificationTypes.mention }
 
   override suspend fun userTimeline(
     user_id: String,
@@ -105,7 +106,7 @@ class MastodonService(
     resources.selfFavourites(limit = count, maxId = max_id)
 
   override suspend fun listTimeline(list_id: String, count: Int, max_id: String?, since_id: String?): List<IStatus> =
-    resources.homeTimeline(limit = count, maxId = max_id)
+    resources.listTimeline(id = list_id, limit = count, maxId = max_id, sinceId = since_id)
 
   // Mastodon-specific timelines
   suspend fun localTimeline(count: Int, max_id: String? = null, since_id: String? = null): List<IStatus> =
@@ -250,7 +251,7 @@ class MastodonService(
 
   suspend fun emojis(): List<Emoji> = resources.customEmojis()
 
-  fun verifyCredentials(): Account = throw UnsupportedOperationException("Use coroutine version")
+  fun verifyCredentials(): Account = throw UnsupportedOperationException("This method is not supported; use verifyCredentialsSuspend() instead")
 
   suspend fun verifyCredentialsSuspend(): Account = resources.verifyCredentials()
 }
