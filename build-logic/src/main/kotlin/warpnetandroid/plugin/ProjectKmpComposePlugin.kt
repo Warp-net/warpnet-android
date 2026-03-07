@@ -12,7 +12,6 @@ class ProjectKmpComposePlugin : Plugin<Project> {
       with(pluginManager) {
         apply("org.jetbrains.compose")
         apply("warpnet-android.project.kmp")
-        apply("warpnet-android.detekt")
       }
       kotlin {
         sourceSets.apply {

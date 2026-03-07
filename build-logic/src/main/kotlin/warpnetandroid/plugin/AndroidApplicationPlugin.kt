@@ -17,7 +17,6 @@ class AndroidApplicationPlugin : Plugin<Project> {
         apply("com.android.application")
         apply("org.jetbrains.kotlin.android")
         apply("org.jetbrains.compose")
-        apply("warpnet-android.detekt")
       }
       dependencies {
         implementation(libs.findLibrary("androidx.activity.compose"))
