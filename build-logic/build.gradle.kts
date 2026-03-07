@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.gradlePlugin.kotlin)
     implementation(libs.gradlePlugin.compose)
 
-    implementation(libs.gradlePlugin.detekt)
     implementation(libs.gradlePlugin.versionsCheck)
     
     // JSON library for build scripts (removed from Gradle API in 9.0)
@@ -49,10 +48,6 @@ gradlePlugin {
         //
         // // Tool
         //
-        register("detekt") {
-            id = "warpnet-android.detekt"
-            implementationClass = "warpnetandroid.tool.DetektPlugin"
-        }
         register("versionsCheck") {
             id = "warpnet-android.versionsCheck"
             implementationClass = "warpnetandroid.tool.VersionsCheckPlugin"

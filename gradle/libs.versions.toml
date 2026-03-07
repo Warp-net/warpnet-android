@@ -13,7 +13,6 @@ okhttp = "4.10.0"
 retrofit2 = "2.9.0"
 sqldelight = "1.5.4"
 ktlint = "0.46.1"
-detekt = "1.22.0-RC2"
 datastore = "1.1.0-alpha01"
 moko = "0.20.1"
 accompanist = "0.28.0"
@@ -39,7 +38,6 @@ javafx = { id = "org.openjfx.javafxplugin", version = "0.0.13" }
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-jb" }
-gradlePlugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 gradlePlugin-versionsCheck = { module = "com.github.ben-manes:gradle-versions-plugin", version = "0.43.0" }
 gradlePlugin-gms = { module = "com.google.gms:google-services", version = "4.3.14" }
 gradlePlugin-firebase = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.2" }
@@ -123,9 +121,6 @@ mokoResources = { module = "dev.icerock.moko:resources", version.ref = "moko" }
 #bignum = "com.ionspin.kotlin:bignum:0.3.7"
 kfilepicker = "moe.tlaster:KFilePicker:1.0.5"
 #kWalletConnect = "io.github.joesteven:kwalletconnect:1.0.3-dev"
-warpnetComposeRulesDetekt = "com.warpnet.compose.rules:detekt:0.0.26"
-#krypto = "com.soywiz.korlibs.krypto:krypto:3.4.0"
-#kVideoplayer = "io.github.joesteven:kvideoplayer:1.0.1-dev03"
 cache4k = "io.github.reactivecircus.cache4k:cache4k:0.9.0"
 jodaTime = "joda-time:joda-time:2.12.2"
 

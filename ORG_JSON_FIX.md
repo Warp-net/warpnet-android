@@ -41,7 +41,6 @@ dependencies {
     implementation(libs.gradlePlugin.kotlin)
     implementation(libs.gradlePlugin.compose)
 
-    implementation(libs.gradlePlugin.detekt)
     implementation(libs.gradlePlugin.versionsCheck)
     
     // JSON library for build scripts (removed from Gradle API in 9.0)

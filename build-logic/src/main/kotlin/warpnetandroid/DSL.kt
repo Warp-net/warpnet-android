@@ -47,7 +47,3 @@ fun DependencyHandlerScope.implementation(dependencyNotation: Any) {
 fun DependencyHandlerScope.implementation(dependency: Dependency) {
     add("implementation", dependency.get())
 }
-
-fun DependencyHandlerScope.detektPlugins(dependency: Dependency) {
-    add("detektPlugins", dependency.get())
-}

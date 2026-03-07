@@ -9,7 +9,6 @@ class KmpComposePlugin : Plugin<Project> {
       with(pluginManager) {
         apply("org.jetbrains.compose")
         apply("warpnet-android.kmp")
-        apply("warpnet-android.detekt")
       }
     }
   }
