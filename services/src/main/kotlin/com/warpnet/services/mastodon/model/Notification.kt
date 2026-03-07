@@ -18,16 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import com.warpnet.services.microblog.model.INotification
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Notification(
+  val id: String? = null,
+  val type: NotificationTypes? = null,
+  @SerialName("created_at") val createdAt: MastodonDate? = null,
+  val account: Account? = null,
+  val status: Status? = null,
+) : INotification

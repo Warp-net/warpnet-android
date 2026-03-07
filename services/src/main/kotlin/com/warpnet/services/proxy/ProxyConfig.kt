@@ -18,16 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.proxy
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+data class ProxyConfig(
+  val enable: Boolean = false,
+  val server: String = "",
+  val port: Int = 0,
+  val userName: String = "",
+  val password: String = "",
+  val type: Type = Type.HTTP,
+) {
+  enum class Type {
+    HTTP, SOCKS, REVERSE
+  }
+}

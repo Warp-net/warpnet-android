@@ -18,16 +18,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class NotificationTypes {
+  @SerialName("follow") follow,
+  @SerialName("favourite") favourite,
+  @SerialName("reblog") reblog,
+  @SerialName("mention") mention,
+  @SerialName("poll") poll,
+  @SerialName("follow_request") follow_request,
+  @SerialName("status") status,
+}

@@ -18,16 +18,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Emoji(
+  val shortcode: String? = null,
+  val url: String? = null,
+  @SerialName("static_url") val staticURL: String? = null,
+  @SerialName("visible_in_picker") val visibleInPicker: Boolean? = null,
+  val category: String? = null,
+)

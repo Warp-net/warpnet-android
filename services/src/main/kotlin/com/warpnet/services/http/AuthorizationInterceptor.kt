@@ -18,16 +18,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.http
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import com.warpnet.services.http.authorization.Authorization
+import okhttp3.Interceptor
+import okhttp3.Response
+
+class AuthorizationInterceptor(
+  private val authorization: Authorization,
+) : Interceptor {
+  override fun intercept(chain: Interceptor.Chain): Response {
+    val request = chain.request()
+    return if (authorization.hasAuthorization) {
+      val signed = authorization.signRequest(request)
+      chain.proceed(signed)
+    } else {
+      chain.proceed(request)
+    }
+  }
+}

@@ -18,16 +18,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Mention(
+  val id: String? = null,
+  val username: String? = null,
+  val acct: String? = null,
+  val url: String? = null,
+)

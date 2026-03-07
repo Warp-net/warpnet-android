@@ -20,8 +20,15 @@
  */
 package com.warpnet.services.utils
 
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 fun InputStream.copyToInLength(output: OutputStream, length: Int) {
   val buffer = ByteArray(1024)
@@ -34,4 +41,23 @@ fun InputStream.copyToInLength(output: OutputStream, length: Int) {
     output.write(buffer, 0, read)
     bytesRead += read
   } while (bytesRead <= length)
+}
+
+suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
+  enqueue(object : Callback {
+    override fun onResponse(call: Call, response: Response) {
+      continuation.resume(response)
+    }
+
+    override fun onFailure(call: Call, e: IOException) {
+      if (continuation.isCancelled) return
+      continuation.resumeWithException(e)
+    }
+  })
+  continuation.invokeOnCancellation {
+    try {
+      cancel()
+    } catch (ignored: Throwable) {
+    }
+  }
 }

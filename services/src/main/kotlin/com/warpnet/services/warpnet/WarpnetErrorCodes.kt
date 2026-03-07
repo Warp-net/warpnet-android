@@ -18,16 +18,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.warpnet
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+object WarpnetErrorCodes {
+  const val AlreadyFavorited = 139
+  const val AlreadyRetweeted = 327
+  const val RateLimitExceeded = 88
+  const val TemporarilyLocked = 326
+}

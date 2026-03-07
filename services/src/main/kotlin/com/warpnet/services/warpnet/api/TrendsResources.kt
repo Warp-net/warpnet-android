@@ -20,14 +20,14 @@
  */
 package com.warpnet.services.warpnet.api
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import com.warpnet.services.warpnet.model.WarpnetTrendsResponseV1
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface TrendsResources {
+  @GET("/1.1/trends/place.json")
+  suspend fun trends(
+    @Query("id") id: String,
+    @Query("exclude") exclude: String? = null,
+  ): List<WarpnetTrendsResponseV1>
+}

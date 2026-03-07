@@ -18,16 +18,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import com.warpnet.services.microblog.model.ITrend
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TrendHistory(
+  val day: String? = null,
+  val uses: String? = null,
+  val accounts: String? = null,
+)
+
+@Serializable
+data class Trend(
+  val name: String? = null,
+  val url: String? = null,
+  val history: List<TrendHistory>? = null,
+) : ITrend

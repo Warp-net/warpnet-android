@@ -18,16 +18,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.http.authorization
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import okhttp3.Request
+
+class EmptyAuthorization : Authorization {
+  override val hasAuthorization: Boolean = false
+}
+
+class BearerAuthorization(
+  private val accessToken: String,
+) : Authorization {
+  override val hasAuthorization: Boolean = true
+
+  override fun signRequest(request: Request): Request {
+    return request.newBuilder()
+      .header("Authorization", "Bearer $accessToken")
+      .build()
+  }
+}

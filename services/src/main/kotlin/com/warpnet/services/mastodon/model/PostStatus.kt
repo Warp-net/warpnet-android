@@ -18,16 +18,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Warpnet Android. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.warpnet.services.warpnet.api
+package com.warpnet.services.mastodon.model
 
-interface WarpnetResources :
-  TimelineResources,
-  LookupResources,
-  UsersResources,
-  SearchResources,
-  StatusResources,
-  FriendshipResources,
-  FollowsResources,
-  ListsResources,
-  TrendsResources,
-  DirectMessagesResources
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class PostPoll(
+  val options: List<String>,
+  @SerialName("expires_in") val expiresIn: Int? = null,
+  val multiple: Boolean? = null,
+)
+
+@Serializable
+data class PostStatus(
+  val status: String? = null,
+  @SerialName("in_reply_to_id") val inReplyToID: String? = null,
+  @SerialName("media_ids") val mediaIDS: List<String>? = null,
+  val sensitive: Boolean? = null,
+  @SerialName("spoiler_text") val spoilerText: String? = null,
+  val visibility: Visibility? = null,
+  val poll: PostPoll? = null,
+)
