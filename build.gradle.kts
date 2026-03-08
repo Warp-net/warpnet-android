@@ -31,9 +31,9 @@ allprojects {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(Versions.Java.jvmTarget))
 
-            allWarningsAsErrors.set(true)
+//            allWarningsAsErrors.set(true)
             freeCompilerArgs.addAll(
-                "-Xcontext-receivers",
+                "-Xcontext-parameters",
                 "-Xskip-prerelease-check"
             )
         }

@@ -20,9 +20,7 @@
  */
 package com.warpnet.services.utils
 
-import com.warpnet.services.http.MicroBlogException
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 
@@ -34,7 +32,6 @@ internal val JSON by lazy {
   }
 }
 
-class MicroBlogJsonException(override val microBlogErrorMessage: String?) : MicroBlogException()
 
 @OptIn(ExperimentalSerializationApi::class)
 internal inline fun <reified T> T.encodeJson(): String =
@@ -47,5 +44,5 @@ internal inline fun <reified T> String.decodeJson(): T {
     runCatching {
       JSON.decodeFromJsonElement<T>(it)
     }.getOrNull()
-  } ?: throw MicroBlogJsonException(this)
+  } ?: throw Exception(this)
 }
